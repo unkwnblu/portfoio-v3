@@ -1,0 +1,118 @@
+"use client";
+
+import { useState } from "react";
+import { useDataStore, VideoItem } from "@/app/lib/DataStore";
+import { Plus, Pencil, Trash2, Check, Play } from "lucide-react";
+
+const gradientOptions = [
+    "from-violet-600 to-indigo-800", "from-rose-600 to-pink-800",
+    "from-cyan-600 to-blue-800", "from-amber-600 to-orange-800",
+    "from-emerald-600 to-green-800", "from-red-600 to-rose-800",
+];
+
+const emptyVideo: Omit<VideoItem, "id"> = {
+    title: "", views: "0", likes: "0", gradient: gradientOptions[0], tag: "", duration: "0:00",
+};
+
+export default function VideosAdmin() {
+    const { videos, addVideo, updateVideo, deleteVideo } = useDataStore();
+    const [editing, setEditing] = useState<string | null>(null);
+    const [creating, setCreating] = useState(false);
+    const [form, setForm] = useState(emptyVideo);
+
+    const startCreate = () => { setCreating(true); setEditing(null); setForm(emptyVideo); };
+    const startEdit = (v: VideoItem) => { setEditing(v.id); setCreating(false); setForm(v); };
+    const handleCancel = () => { setCreating(false); setEditing(null); setForm(emptyVideo); };
+
+    const handleSave = () => {
+        if (!form.title.trim()) return;
+        if (creating) addVideo({ ...form, id: `vid-${Date.now()}` });
+        else if (editing) updateVideo(editing, form);
+        handleCancel();
+    };
+
+    const showForm = creating || editing;
+
+    return (
+        <div>
+            <div className="mb-8 flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold text-text-primary">Videos</h1>
+                    <p className="mt-1 text-sm text-text-secondary">{videos.length} videos total</p>
+                </div>
+                {!showForm && (
+                    <button onClick={startCreate} className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-text-inverse hover:bg-accent-hover">
+                        <Plus size={16} /> Add Video
+                    </button>
+                )}
+            </div>
+
+            {showForm && (
+                <div className="mb-8 rounded-2xl border border-border bg-bg-card p-6">
+                    <h2 className="mb-5 text-lg font-semibold text-text-primary">{creating ? "New Video" : "Edit Video"}</h2>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="sm:col-span-2">
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Title</label>
+                            <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="Video title" />
+                        </div>
+                        <div>
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Tag</label>
+                            <input value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="Cinematic, Product, etc." />
+                        </div>
+                        <div>
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Duration</label>
+                            <input value={form.duration} onChange={(e) => setForm({ ...form, duration: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="0:45" />
+                        </div>
+                        <div>
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Views</label>
+                            <input value={form.views} onChange={(e) => setForm({ ...form, views: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="12.4K" />
+                        </div>
+                        <div>
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Likes</label>
+                            <input value={form.likes} onChange={(e) => setForm({ ...form, likes: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="1.8K" />
+                        </div>
+                        <div className="sm:col-span-2">
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Gradient</label>
+                            <div className="flex flex-wrap gap-2">
+                                {gradientOptions.map((g) => (
+                                    <button key={g} onClick={() => setForm({ ...form, gradient: g })} className={`h-8 w-16 rounded-lg bg-gradient-to-br ${g} transition-all ${form.gradient === g ? "ring-2 ring-accent ring-offset-2 ring-offset-bg-card" : "opacity-60 hover:opacity-100"}`} />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="mt-5 flex gap-3">
+                        <button onClick={handleSave} className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-text-inverse hover:bg-accent-hover"><Check size={14} /> Save</button>
+                        <button onClick={handleCancel} className="rounded-xl border border-border px-5 py-2.5 text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-bg-secondary">Cancel</button>
+                    </div>
+                </div>
+            )}
+
+            <div className="grid gap-4 sm:grid-cols-2">
+                {videos.map((video) => (
+                    <div key={video.id} className="group rounded-2xl border border-border bg-bg-card overflow-hidden transition-all hover:border-accent/10">
+                        <div className={`relative flex h-32 items-center justify-center bg-gradient-to-br ${video.gradient}`}>
+                            <Play size={24} className="text-white/60" />
+                            <span className="absolute bottom-2 right-2 rounded bg-black/50 px-1.5 py-0.5 text-[10px] font-mono text-white">{video.duration}</span>
+                            <span className="absolute left-2 top-2 rounded-full bg-white/10 px-2 py-0.5 text-[9px] font-bold uppercase text-white backdrop-blur-sm">{video.tag}</span>
+                        </div>
+                        <div className="flex items-center gap-3 p-4">
+                            <div className="flex-1 min-w-0">
+                                <p className="truncate text-sm font-semibold text-text-primary">{video.title}</p>
+                                <p className="text-xs text-text-tertiary">{video.views} views · {video.likes} likes</p>
+                            </div>
+                            <div className="flex shrink-0 gap-1">
+                                <button onClick={() => startEdit(video)} className="flex h-8 w-8 items-center justify-center rounded-lg text-text-tertiary hover:bg-bg-secondary hover:text-accent"><Pencil size={14} /></button>
+                                <button onClick={() => deleteVideo(video.id)} className="flex h-8 w-8 items-center justify-center rounded-lg text-text-tertiary hover:bg-red-500/10 hover:text-red-400"><Trash2 size={14} /></button>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+            {videos.length === 0 && (
+                <div className="rounded-2xl border border-dashed border-border bg-bg-card p-12 text-center">
+                    <p className="text-sm text-text-tertiary">No videos yet.</p>
+                </div>
+            )}
+        </div>
+    );
+}
