@@ -11,6 +11,14 @@ export interface Project {
   techStack: string[];
   gradient: string;
   icon: string;
+  // Detail page fields (optional — filled via admin)
+  longDescription?: string;
+  challenge?: string;
+  solution?: string;
+  results?: string;
+  images?: string[];
+  liveUrl?: string;
+  repoUrl?: string;
 }
 
 export interface SocialLink {

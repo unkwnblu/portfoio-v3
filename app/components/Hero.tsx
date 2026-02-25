@@ -191,7 +191,7 @@ export default function Hero() {
                             <span className="block">
                                 {splitText("Seamless ")}
                                 <span className="gradient-text">
-                                    {splitText("Experiences")}
+                                    ("Experiences")
                                 </span>
                                 <span className="text-accent hero-char inline-block">.</span>
                             </span>

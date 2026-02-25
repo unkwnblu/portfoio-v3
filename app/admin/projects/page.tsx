@@ -143,6 +143,36 @@ export default function ProjectsAdmin() {
                                 <button onClick={addTech} className="rounded-xl border border-border bg-bg-secondary px-3 py-2 text-sm text-text-secondary hover:text-accent transition-colors">Add</button>
                             </div>
                         </div>
+
+                        {/* Separator */}
+                        <div className="sm:col-span-2 pt-2">
+                            <h3 className="text-sm font-semibold text-text-primary border-t border-border pt-4">Case Study Details <span className="text-text-tertiary font-normal">(optional)</span></h3>
+                            <p className="text-xs text-text-tertiary mt-0.5">These fields populate the full project detail page.</p>
+                        </div>
+                        <div className="sm:col-span-2">
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Long Description</label>
+                            <textarea value={form.longDescription || ""} onChange={(e) => setForm({ ...form, longDescription: e.target.value })} rows={4} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent resize-none" placeholder="Detailed overview of the project..." />
+                        </div>
+                        <div className="sm:col-span-2">
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">The Challenge</label>
+                            <textarea value={form.challenge || ""} onChange={(e) => setForm({ ...form, challenge: e.target.value })} rows={3} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent resize-none" placeholder="What problem did this project solve?" />
+                        </div>
+                        <div className="sm:col-span-2">
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">The Solution</label>
+                            <textarea value={form.solution || ""} onChange={(e) => setForm({ ...form, solution: e.target.value })} rows={3} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent resize-none" placeholder="How did you approach and solve it?" />
+                        </div>
+                        <div className="sm:col-span-2">
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Results & Impact</label>
+                            <textarea value={form.results || ""} onChange={(e) => setForm({ ...form, results: e.target.value })} rows={3} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent resize-none" placeholder="What were the measurable outcomes?" />
+                        </div>
+                        <div>
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Live URL</label>
+                            <input value={form.liveUrl || ""} onChange={(e) => setForm({ ...form, liveUrl: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="https://..." />
+                        </div>
+                        <div>
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Repo URL</label>
+                            <input value={form.repoUrl || ""} onChange={(e) => setForm({ ...form, repoUrl: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="https://github.com/..." />
+                        </div>
                     </div>
                     <div className="mt-5 flex gap-3">
                         <button onClick={handleSave} className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-text-inverse hover:bg-accent-hover"><Check size={14} /> Save</button>
