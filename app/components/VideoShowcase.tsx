@@ -1,0 +1,179 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { Play, Heart, MessageCircle, ExternalLink } from "lucide-react";
+import { gsap } from "@/app/hooks/useGsap";
+
+const videos = [
+    {
+        title: "Urban Night Cinematography",
+        views: "12.4K",
+        likes: "1.8K",
+        gradient: "from-violet-600 to-indigo-800",
+        tag: "Cinematic",
+        duration: "0:32",
+    },
+    {
+        title: "Product Reveal — Tech Gadget",
+        views: "8.7K",
+        likes: "956",
+        gradient: "from-rose-600 to-pink-800",
+        tag: "Product",
+        duration: "0:45",
+    },
+    {
+        title: "Anime Edit — Jujutsu Kaisen AMV",
+        views: "34.2K",
+        likes: "5.1K",
+        gradient: "from-cyan-600 to-blue-800",
+        tag: "Anime Edit",
+        duration: "1:12",
+    },
+    {
+        title: "Street Photography Montage",
+        views: "6.3K",
+        likes: "743",
+        gradient: "from-amber-600 to-orange-800",
+        tag: "Photography",
+        duration: "0:58",
+    },
+];
+
+export default function VideoShowcase() {
+    const sectionRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!sectionRef.current) return;
+
+        const ctx = gsap.context(() => {
+            gsap.from(".video-card", {
+                y: 80,
+                opacity: 0,
+                scale: 0.9,
+                duration: 0.8,
+                stagger: 0.15,
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: "top 70%",
+                    toggleActions: "play none none reverse",
+                },
+            });
+
+            // Parallax on the large background text
+            gsap.to(".video-bg-text", {
+                x: -100,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: 2,
+                },
+            });
+        }, sectionRef);
+
+        return () => ctx.revert();
+    }, []);
+
+    return (
+        <section ref={sectionRef} id="videos" className="relative py-32 overflow-hidden">
+            {/* Huge background text */}
+            <div className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 video-bg-text">
+                <span
+                    className="text-[12rem] font-black tracking-tighter leading-none whitespace-nowrap sm:text-[16rem] text-text-primary/[0.02]"
+                    style={{ WebkitTextStroke: "1px var(--border)" }}
+                >
+                    VIDEO REEL
+                </span>
+            </div>
+
+            <div className="relative mx-auto max-w-6xl px-6">
+                {/* Section header */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.6 }}
+                    className="mb-16"
+                >
+                    <span className="font-mono text-sm text-accent">Creative Reel</span>
+                    <h2 className="mt-2 text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
+                        Video & Motion Work
+                    </h2>
+                    <p className="mt-3 max-w-lg text-text-secondary">
+                        Edits, cinematography, and motion pieces — from anime AMVs
+                        to product reveals.
+                    </p>
+                </motion.div>
+
+                {/* Video grid */}
+                <div className="grid gap-5 sm:grid-cols-2">
+                    {videos.map((video, index) => (
+                        <div
+                            key={video.title}
+                            className={`video-card glow-border group relative overflow-hidden rounded-2xl bg-bg-card ${index === 0 ? "sm:row-span-2" : ""
+                                }`}
+                        >
+                            {/* Video thumbnail */}
+                            <div
+                                className={`relative bg-gradient-to-br ${video.gradient} ${index === 0 ? "h-64 sm:h-full" : "h-48"
+                                    } flex items-center justify-center`}
+                            >
+                                {/* Play button */}
+                                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 backdrop-blur-md text-white transition-transform group-hover:scale-110">
+                                    <Play size={20} fill="white" />
+                                </div>
+
+                                {/* Duration badge */}
+                                <span className="absolute bottom-3 right-3 rounded-md bg-black/50 px-2 py-0.5 text-[11px] font-mono font-bold text-white backdrop-blur-sm">
+                                    {video.duration}
+                                </span>
+
+                                {/* Tag */}
+                                <span className="absolute left-3 top-3 rounded-full bg-white/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-md">
+                                    {video.tag}
+                                </span>
+                            </div>
+
+                            {/* Info */}
+                            <div className="p-5">
+                                <h3 className="mb-3 font-bold text-text-primary group-hover:text-accent transition-colors">
+                                    {video.title}
+                                </h3>
+                                <div className="flex items-center gap-4 text-xs text-text-tertiary">
+                                    <span className="flex items-center gap-1">
+                                        <Play size={10} />
+                                        {video.views} views
+                                    </span>
+                                    <span className="flex items-center gap-1">
+                                        <Heart size={10} />
+                                        {video.likes}
+                                    </span>
+                                    <span className="flex items-center gap-1">
+                                        <MessageCircle size={10} />
+                                        Reply
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* View more */}
+                <div className="mt-8 flex justify-center">
+                    <a
+                        href="https://tiktok.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group inline-flex items-center gap-2 rounded-xl border border-border bg-bg-card px-6 py-3 text-sm font-semibold text-text-primary transition-all hover:border-accent/30 hover:bg-bg-card-hover"
+                    >
+                        View Full Reel on TikTok
+                        <ExternalLink size={14} className="text-accent transition-transform group-hover:translate-x-0.5" />
+                    </a>
+                </div>
+            </div>
+        </section>
+    );
+}
