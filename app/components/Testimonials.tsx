@@ -122,7 +122,7 @@ export default function Testimonials() {
                 <div className="absolute left-1/2 top-0 h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-accent/3 blur-[120px]" />
             </div>
 
-            <div className="relative mx-auto max-w-6xl px-6">
+            <div className="relative mx-auto max-w-7xl px-6">
                 {/* Section header */}
                 <div className="testi-header mb-16 text-center">
                     <span className="font-mono text-sm text-accent">Testimonials</span>

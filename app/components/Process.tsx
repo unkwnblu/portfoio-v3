@@ -156,7 +156,7 @@ export default function Process() {
                 <div className="absolute right-0 top-1/2 h-[500px] w-[500px] -translate-y-1/2 rounded-full bg-accent/4 blur-[130px]" />
             </div>
 
-            <div className="relative mx-auto max-w-6xl px-6">
+            <div className="relative mx-auto max-w-7xl px-6">
                 {/* Section header */}
                 <div className="process-header mb-16">
                     <span className="font-mono text-sm text-accent">How I Work</span>

@@ -64,7 +64,7 @@ export default function AvailableForHire() {
 
     return (
         <section ref={sectionRef} className="relative py-24 overflow-hidden">
-            <div className="mx-auto max-w-6xl px-6">
+            <div className="mx-auto max-w-7xl px-6">
                 <div className="hire-card relative overflow-hidden rounded-3xl border border-accent/20 bg-gradient-to-br from-accent/5 via-bg-card to-accent/3 p-12 sm:p-16">
                     {/* Large animated background elements */}
                     <div className="pointer-events-none absolute inset-0">

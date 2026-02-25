@@ -131,7 +131,7 @@ export default function Projects() {
                 <div className="projects-orb absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/3 blur-[150px]" />
             </div>
 
-            <div className="relative mx-auto max-w-6xl px-6">
+            <div className="relative mx-auto max-w-7xl px-6">
                 {/* Section header */}
                 <div className="projects-header mb-12">
                     <span className="font-mono text-sm text-accent">02 —</span>

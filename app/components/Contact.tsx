@@ -78,7 +78,7 @@ export default function Contact() {
 
     return (
         <section ref={sectionRef} id="contact" className="relative py-32 overflow-hidden">
-            <div className="mx-auto max-w-6xl px-6">
+            <div className="mx-auto max-w-7xl px-6">
                 <div className="contact-card relative overflow-hidden rounded-3xl border border-border bg-bg-card p-10 sm:p-16">
                     {/* Animated background orbs */}
                     <div className="pointer-events-none absolute -right-20 -top-20 contact-orb h-60 w-60 rounded-full bg-accent/8 blur-[80px]" />

@@ -39,7 +39,7 @@ export default function Navbar() {
                 : "bg-transparent py-5"
                 }`}
         >
-            <nav className="mx-auto flex max-w-6xl items-center justify-between px-6">
+            <nav className="mx-auto flex max-w-7xl items-center justify-between px-6">
                 {/* Logo */}
                 <motion.a
                     href="#"
@@ -128,7 +128,7 @@ export default function Navbar() {
                         exit={{ opacity: 0, height: 0 }}
                         className="glass overflow-hidden border-b border-border md:hidden"
                     >
-                        <div className="mx-auto flex max-w-6xl flex-col gap-1 px-6 py-4">
+                        <div className="mx-auto flex max-w-7xl flex-col gap-1 px-6 py-4">
                             {navLinks.map((link) => (
                                 <button
                                     key={link.href}

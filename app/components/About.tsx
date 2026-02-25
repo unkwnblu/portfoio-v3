@@ -127,7 +127,7 @@ export default function About() {
                 <div className="h-40 w-40 rounded-full border border-accent/8 bg-accent/2" />
             </div>
 
-            <div className="mx-auto max-w-6xl px-6">
+            <div className="mx-auto max-w-7xl px-6">
                 {/* Section header */}
                 <div className="about-header mb-16">
                     <span className="font-mono text-sm text-accent">01 —</span>

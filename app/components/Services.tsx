@@ -133,7 +133,7 @@ export default function Services() {
                 <div className="h-[400px] w-[400px] rounded-full border border-accent/10 bg-accent/3 blur-sm" />
             </div>
 
-            <div className="relative mx-auto max-w-6xl px-6">
+            <div className="relative mx-auto max-w-7xl px-6">
                 {/* Section header */}
                 <div className="services-header mb-16 text-center">
                     <span className="font-mono text-sm text-accent">What I Do</span>

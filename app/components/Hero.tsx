@@ -166,7 +166,7 @@ export default function Hero() {
                 </div>
             </div>
 
-            <div className="hero-content relative mx-auto w-full max-w-6xl px-6 py-32">
+            <div className="hero-content relative mx-auto w-full max-w-7xl px-6 pt-24 pb-16">
                 <motion.div
                     variants={containerVariants}
                     initial="hidden"
@@ -182,8 +182,8 @@ export default function Hero() {
                     </motion.div>
 
                     {/* Headline with character animation */}
-                    <div ref={headlineRef} className="mt-8 flex flex-col gap-2">
-                        <p className="text-lg text-text-secondary sm:text-xl mb-2">
+                    <div ref={headlineRef} className="mt-6 flex flex-col gap-1">
+                        <p className="text-lg text-text-secondary sm:text-xl mb-1">
                             {splitText("Designing Intuitive Interfaces,")}
                         </p>
                         <h1 className="text-5xl font-bold leading-[1.05] tracking-tight text-text-primary sm:text-6xl lg:text-7xl xl:text-8xl">
@@ -201,7 +201,7 @@ export default function Hero() {
                     {/* Role badges */}
                     <motion.div
                         variants={itemVariants}
-                        className="mt-8 flex flex-wrap gap-3"
+                        className="mt-5 flex flex-wrap gap-3"
                     >
                         <span className="inline-flex items-center gap-2 rounded-xl border border-border bg-bg-card px-4 py-2 text-sm font-medium text-text-primary">
                             <Palette size={14} className="text-accent" />
@@ -225,7 +225,7 @@ export default function Hero() {
                     {/* CTAs */}
                     <motion.div
                         variants={itemVariants}
-                        className="mt-8 flex flex-wrap gap-3"
+                        className="mt-6 flex flex-wrap gap-3"
                     >
                         <button
                             onClick={() =>

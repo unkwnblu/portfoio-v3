@@ -90,7 +90,7 @@ export default function Blog() {
 
     return (
         <section ref={sectionRef} className="relative py-32">
-            <div className="mx-auto max-w-6xl px-6">
+            <div className="mx-auto max-w-7xl px-6">
                 {/* Section header */}
                 <div className="blog-header mb-16">
                     <span className="font-mono text-sm text-accent">Blog</span>

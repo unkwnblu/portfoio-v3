@@ -89,7 +89,7 @@ export default function VideoShowcase() {
                 </span>
             </div>
 
-            <div className="relative mx-auto max-w-6xl px-6">
+            <div className="relative mx-auto max-w-7xl px-6">
                 {/* Section header */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
