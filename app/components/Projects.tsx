@@ -40,7 +40,7 @@ function ProjectCard({ project }: { project: Project }) {
                     <h3 className="mb-2 text-lg font-bold text-text-primary">{project.title}</h3>
                     <p className="mb-4 flex-1 text-sm leading-relaxed text-text-secondary">{project.description}</p>
                     <div className="flex flex-wrap gap-1.5">
-                        {project.techStack.map((tech) => (
+                        {project.tech_stack.map((tech) => (
                             <span key={tech} className="rounded-md border border-border bg-bg-secondary px-2 py-0.5 text-[11px] font-medium text-text-tertiary">
                                 {tech}
                             </span>

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useDataStore, Testimonial } from "@/app/lib/DataStore";
+import { useDataStore } from "@/app/lib/DataStore";
+import type { Testimonial } from "@/app/types";
 import { Plus, Pencil, Trash2, Check, Star, Quote } from "lucide-react";
 
 const gradientOptions = [
@@ -24,10 +25,10 @@ export default function TestimonialsAdmin() {
     const startEdit = (t: Testimonial) => { setEditing(t.id); setCreating(false); setForm(t); };
     const handleCancel = () => { setCreating(false); setEditing(null); setForm(emptyTestimonial); };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!form.name.trim() || !form.content.trim()) return;
-        if (creating) addTestimonial({ ...form, id: `testi-${Date.now()}` });
-        else if (editing) updateTestimonial(editing, form);
+        if (creating) await addTestimonial(form);
+        else if (editing) await updateTestimonial(editing, form);
         handleCancel();
     };
 

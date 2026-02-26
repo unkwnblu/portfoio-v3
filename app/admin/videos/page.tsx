@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useDataStore, VideoItem } from "@/app/lib/DataStore";
+import { useDataStore } from "@/app/lib/DataStore";
+import type { VideoItem } from "@/app/types";
 import { Plus, Pencil, Trash2, Check, Play } from "lucide-react";
 
 const gradientOptions = [
@@ -24,10 +25,10 @@ export default function VideosAdmin() {
     const startEdit = (v: VideoItem) => { setEditing(v.id); setCreating(false); setForm(v); };
     const handleCancel = () => { setCreating(false); setEditing(null); setForm(emptyVideo); };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!form.title.trim()) return;
-        if (creating) addVideo({ ...form, id: `vid-${Date.now()}` });
-        else if (editing) updateVideo(editing, form);
+        if (creating) await addVideo(form);
+        else if (editing) await updateVideo(editing, form);
         handleCancel();
     };
 

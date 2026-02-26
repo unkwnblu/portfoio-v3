@@ -105,8 +105,8 @@ export default function ProjectDetailPage() {
                     <div className="mt-3 flex flex-wrap items-center gap-3">
                         <span
                             className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${project.status === "Completed"
-                                    ? "bg-emerald-500/30 text-emerald-100"
-                                    : "bg-amber-500/30 text-amber-100"
+                                ? "bg-emerald-500/30 text-emerald-100"
+                                : "bg-amber-500/30 text-amber-100"
                                 }`}
                         >
                             {project.status}
@@ -129,7 +129,7 @@ export default function ProjectDetailPage() {
                                 Overview
                             </h2>
                             <p className="text-base leading-relaxed text-text-secondary">
-                                {project.longDescription || project.description}
+                                {project.long_description || project.description}
                             </p>
                         </section>
 
@@ -200,7 +200,7 @@ export default function ProjectDetailPage() {
                         )}
 
                         {/* Default: no detail content yet */}
-                        {!project.longDescription &&
+                        {!project.long_description &&
                             !project.challenge &&
                             !project.solution && (
                                 <div className="rounded-2xl border border-dashed border-border bg-bg-card p-10 text-center">
@@ -222,7 +222,7 @@ export default function ProjectDetailPage() {
                                 Tech Stack
                             </h3>
                             <div className="flex flex-wrap gap-2">
-                                {project.techStack.map((tech) => (
+                                {project.tech_stack.map((tech) => (
                                     <span
                                         key={tech}
                                         className="rounded-lg border border-border bg-bg-secondary px-3 py-1.5 text-xs font-medium text-text-secondary"
@@ -251,8 +251,8 @@ export default function ProjectDetailPage() {
                                     <span className="text-xs text-text-tertiary">Status</span>
                                     <span
                                         className={`text-xs font-medium ${project.status === "Completed"
-                                                ? "text-emerald-400"
-                                                : "text-amber-400"
+                                            ? "text-emerald-400"
+                                            : "text-amber-400"
                                             }`}
                                     >
                                         {project.status}
@@ -262,11 +262,11 @@ export default function ProjectDetailPage() {
                         </div>
 
                         {/* Links */}
-                        {(project.liveUrl || project.repoUrl) && (
+                        {(project.live_url || project.repo_url) && (
                             <div className="space-y-3">
-                                {project.liveUrl && (
+                                {project.live_url && (
                                     <a
-                                        href={project.liveUrl}
+                                        href={project.live_url}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="group flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3 text-sm font-semibold text-text-inverse transition-all hover:bg-accent-hover hover:shadow-lg hover:shadow-accent-glow"
@@ -275,9 +275,9 @@ export default function ProjectDetailPage() {
                                         View Live Site
                                     </a>
                                 )}
-                                {project.repoUrl && (
+                                {project.repo_url && (
                                     <a
-                                        href={project.repoUrl}
+                                        href={project.repo_url}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="group flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-bg-card px-6 py-3 text-sm font-semibold text-text-primary transition-all hover:border-accent/30"

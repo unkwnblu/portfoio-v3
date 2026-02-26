@@ -57,8 +57,8 @@ export default function Process() {
                 ease: "power3.out",
                 scrollTrigger: {
                     trigger: sectionRef.current,
-                    start: "top 75%",
-                    toggleActions: "play none none reverse",
+                    start: "top 80%",
+                    once: true,
                 },
             });
 
@@ -70,27 +70,31 @@ export default function Process() {
                 transformOrigin: "left center",
                 scrollTrigger: {
                     trigger: ".process-line",
-                    start: "top 80%",
-                    toggleActions: "play none none reverse",
+                    start: "top 85%",
+                    once: true,
                 },
             });
 
-            // Step cards cascade in alternating from left/right
+            // Step cards cascade in — use grid as trigger so all cards
+            // animate together when the grid enters the viewport.
+            // Previously each card had its own trigger with "reverse",
+            // which on 2-column layouts caused earlier cards to disappear
+            // while scrolling to see the later rows.
             const stepCards = sectionRef.current?.querySelectorAll(".process-step");
             stepCards?.forEach((card, i) => {
                 gsap.from(card, {
-                    y: 80,
-                    x: i % 2 === 0 ? -40 : 40,
+                    y: 60,
+                    x: i % 2 === 0 ? -30 : 30,
                     opacity: 0,
-                    scale: 0.85,
-                    rotation: i % 2 === 0 ? -5 : 5,
+                    scale: 0.9,
+                    rotation: i % 2 === 0 ? -3 : 3,
                     duration: 0.8,
-                    delay: i * 0.1,
+                    delay: i * 0.12,
                     ease: "power3.out",
                     scrollTrigger: {
-                        trigger: card,
-                        start: "top 90%",
-                        toggleActions: "play none none reverse",
+                        trigger: ".process-grid",
+                        start: "top 85%",
+                        once: true,
                     },
                 });
             });
@@ -104,8 +108,8 @@ export default function Process() {
                 ease: "back.out(1.5)",
                 scrollTrigger: {
                     trigger: ".process-grid",
-                    start: "top 80%",
-                    toggleActions: "play none none reverse",
+                    start: "top 85%",
+                    once: true,
                 },
             });
 
@@ -118,8 +122,8 @@ export default function Process() {
                 ease: "back.out(1.4)",
                 scrollTrigger: {
                     trigger: ".process-grid",
-                    start: "top 78%",
-                    toggleActions: "play none none reverse",
+                    start: "top 85%",
+                    once: true,
                 },
             });
 

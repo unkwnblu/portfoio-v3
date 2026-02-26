@@ -70,7 +70,7 @@ export default function Footer() {
                     <Heart size={10} className="text-accent" fill="currentColor" />
                 </p>
                 <div className="flex gap-2">
-                    {profile.socialLinks.slice(0, 3).map((link) => {
+                    {profile.social_links.slice(0, 3).map((link) => {
                         const Icon = socialIcons[link.icon] || Github;
                         return (
                             <a

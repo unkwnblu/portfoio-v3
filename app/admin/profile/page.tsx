@@ -1,31 +1,32 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useDataStore, ProfileData } from "@/app/lib/DataStore";
+import { useDataStore } from "@/app/lib/DataStore";
+import type { Profile } from "@/app/types";
 import { Check, Plus, X } from "lucide-react";
 
 export default function ProfileAdmin() {
-    const { profile, setProfile } = useDataStore();
-    const [form, setForm] = useState<ProfileData>(profile);
+    const { profile, updateProfile } = useDataStore();
+    const [form, setForm] = useState<Profile>(profile);
     const [saved, setSaved] = useState(false);
     const [socialForm, setSocialForm] = useState({ name: "", url: "", icon: "" });
 
     useEffect(() => { setForm(profile); }, [profile]);
 
-    const handleSave = () => {
-        setProfile(form);
+    const handleSave = async () => {
+        await updateProfile(form);
         setSaved(true);
         setTimeout(() => setSaved(false), 2000);
     };
 
     const addSocial = () => {
         if (!socialForm.name.trim() || !socialForm.url.trim()) return;
-        setForm({ ...form, socialLinks: [...form.socialLinks, { ...socialForm, icon: socialForm.icon || socialForm.name.toLowerCase() }] });
+        setForm({ ...form, social_links: [...form.social_links, { ...socialForm, icon: socialForm.icon || socialForm.name.toLowerCase() }] });
         setSocialForm({ name: "", url: "", icon: "" });
     };
 
     const removeSocial = (index: number) => {
-        setForm({ ...form, socialLinks: form.socialLinks.filter((_, i) => i !== index) });
+        setForm({ ...form, social_links: form.social_links.filter((_, i) => i !== index) });
     };
 
     const addInterest = (interest: string) => {
@@ -111,7 +112,7 @@ export default function ProfileAdmin() {
                 <div className="rounded-2xl border border-border bg-bg-card p-6">
                     <h2 className="mb-5 text-base font-semibold text-text-primary">Social Links</h2>
                     <div className="space-y-3 mb-4">
-                        {form.socialLinks.map((link, i) => (
+                        {form.social_links.map((link, i) => (
                             <div key={i} className="flex items-center gap-3 rounded-xl bg-bg-secondary p-3">
                                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10 text-xs font-bold text-accent uppercase">{link.icon.charAt(0)}</div>
                                 <div className="flex-1 min-w-0">

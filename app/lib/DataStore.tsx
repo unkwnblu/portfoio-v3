@@ -1,54 +1,19 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
-import type { Project, ProjectCategory, ProjectStatus } from "@/app/types";
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import { createClient } from "@/app/lib/supabase";
+import type {
+    Project,
+    VideoItem,
+    InstagramPost,
+    BlogArticle,
+    Testimonial,
+    Profile,
+} from "@/app/types";
 
-// ── Extended Types for Admin ──
-export interface VideoItem {
-    id: string;
-    title: string;
-    views: string;
-    likes: string;
-    gradient: string;
-    tag: string;
-    duration: string;
-}
-
-export interface InstagramPost {
-    id: string;
-    gradient: string;
-    likes: string;
-    caption: string;
-}
-
-export interface BlogArticle {
-    id: string;
-    title: string;
-    excerpt: string;
-    date: string;
-    readTime: string;
-    gradient: string;
-    tag: string;
-}
-
-export interface Testimonial {
-    id: string;
-    name: string;
-    role: string;
-    content: string;
-    rating: number;
-    gradient: string;
-}
-
-export interface ProfileData {
-    name: string;
-    tagline: string;
-    bio: string;
-    location: string;
-    email: string;
-    interests: string[];
-    socialLinks: { name: string; url: string; icon: string }[];
-}
+// ── Default fallback data (used when Supabase is unreachable) ──
+import { projects as defaultProjects } from "@/app/data/projects";
+import { profile as defaultProfile } from "@/app/data/profile";
 
 interface DataStore {
     projects: Project[];
@@ -56,64 +21,31 @@ interface DataStore {
     instagram: InstagramPost[];
     blog: BlogArticle[];
     testimonials: Testimonial[];
-    profile: ProfileData;
+    profile: Profile;
+    loading: boolean;
     // CRUD operations
-    setProjects: (projects: Project[]) => void;
-    addProject: (project: Project) => void;
-    updateProject: (id: string, project: Partial<Project>) => void;
-    deleteProject: (id: string) => void;
-    setVideos: (videos: VideoItem[]) => void;
-    addVideo: (video: VideoItem) => void;
-    updateVideo: (id: string, video: Partial<VideoItem>) => void;
-    deleteVideo: (id: string) => void;
-    setInstagram: (posts: InstagramPost[]) => void;
-    addInstagramPost: (post: InstagramPost) => void;
-    updateInstagramPost: (id: string, post: Partial<InstagramPost>) => void;
-    deleteInstagramPost: (id: string) => void;
-    setBlog: (articles: BlogArticle[]) => void;
-    addBlogArticle: (article: BlogArticle) => void;
-    updateBlogArticle: (id: string, article: Partial<BlogArticle>) => void;
-    deleteBlogArticle: (id: string) => void;
-    setTestimonials: (testimonials: Testimonial[]) => void;
-    addTestimonial: (testimonial: Testimonial) => void;
-    updateTestimonial: (id: string, testimonial: Partial<Testimonial>) => void;
-    deleteTestimonial: (id: string) => void;
-    setProfile: (profile: ProfileData) => void;
+    addProject: (project: Omit<Project, "id">) => Promise<void>;
+    updateProject: (id: string, data: Partial<Project>) => Promise<void>;
+    deleteProject: (id: string) => Promise<void>;
+    addVideo: (video: Omit<VideoItem, "id">) => Promise<void>;
+    updateVideo: (id: string, data: Partial<VideoItem>) => Promise<void>;
+    deleteVideo: (id: string) => Promise<void>;
+    addInstagramPost: (post: Omit<InstagramPost, "id">) => Promise<void>;
+    updateInstagramPost: (id: string, data: Partial<InstagramPost>) => Promise<void>;
+    deleteInstagramPost: (id: string) => Promise<void>;
+    addBlogArticle: (article: Omit<BlogArticle, "id">) => Promise<void>;
+    updateBlogArticle: (id: string, data: Partial<BlogArticle>) => Promise<void>;
+    deleteBlogArticle: (id: string) => Promise<void>;
+    addTestimonial: (testimonial: Omit<Testimonial, "id">) => Promise<void>;
+    updateTestimonial: (id: string, data: Partial<Testimonial>) => Promise<void>;
+    deleteTestimonial: (id: string) => Promise<void>;
+    updateProfile: (data: Partial<Profile>) => Promise<void>;
+    refreshData: () => Promise<void>;
+    // Storage helpers
+    uploadFile: (bucket: string, path: string, file: File) => Promise<string | null>;
+    deleteFile: (bucket: string, path: string) => Promise<void>;
+    getPublicUrl: (bucket: string, path: string) => string;
 }
-
-// ── Default Data ──
-import { projects as defaultProjects } from "@/app/data/projects";
-import { profile as defaultProfile } from "@/app/data/profile";
-
-const defaultVideos: VideoItem[] = [
-    { id: "v1", title: "Urban Night Cinematography", views: "12.4K", likes: "1.8K", gradient: "from-violet-600 to-indigo-800", tag: "Cinematic", duration: "0:32" },
-    { id: "v2", title: "Product Reveal — Tech Gadget", views: "8.7K", likes: "956", gradient: "from-rose-600 to-pink-800", tag: "Product", duration: "0:45" },
-    { id: "v3", title: "Anime Edit — Jujutsu Kaisen AMV", views: "34.2K", likes: "5.1K", gradient: "from-cyan-600 to-blue-800", tag: "Anime Edit", duration: "1:12" },
-    { id: "v4", title: "Street Photography Montage", views: "6.3K", likes: "743", gradient: "from-amber-600 to-orange-800", tag: "Photography", duration: "0:58" },
-];
-
-const defaultInstagram: InstagramPost[] = [
-    { id: "ig1", gradient: "from-amber-400 to-orange-600", likes: "2.4K", caption: "Golden hour at the lake 🌅" },
-    { id: "ig2", gradient: "from-blue-400 to-indigo-600", likes: "1.8K", caption: "Architecture details 🏛️" },
-    { id: "ig3", gradient: "from-pink-400 to-rose-600", likes: "3.1K", caption: "Street photography walk 📸" },
-    { id: "ig4", gradient: "from-emerald-400 to-teal-600", likes: "956", caption: "Nature macro shots 🌿" },
-    { id: "ig5", gradient: "from-violet-400 to-purple-600", likes: "4.2K", caption: "Night city vibes 🌃" },
-    { id: "ig6", gradient: "from-cyan-400 to-blue-600", likes: "1.5K", caption: "Studio portrait session 🎭" },
-    { id: "ig7", gradient: "from-red-400 to-rose-600", likes: "2.7K", caption: "Behind the scenes 🎬" },
-    { id: "ig8", gradient: "from-yellow-400 to-amber-600", likes: "1.1K", caption: "Sunset silhouettes 🌇" },
-];
-
-const defaultBlog: BlogArticle[] = [
-    { id: "b1", title: "Every Pixel is a Storyteller: Why Details Matter in UI Design", excerpt: "Small design choices — spacing, color, micro-interactions — can make or break user trust.", date: "Jan 2026", readTime: "5 min read", gradient: "from-rose-500/20 to-pink-600/20", tag: "Design" },
-    { id: "b2", title: "Building Real-time Apps: From WebSockets to Production", excerpt: "A deep dive into architecting real-time collaborative tools using Socket.io and WebRTC.", date: "Dec 2025", readTime: "8 min read", gradient: "from-blue-500/20 to-indigo-600/20", tag: "Engineering" },
-    { id: "b3", title: "Photography & Design: Finding the Right Perspective", excerpt: "How my passion for photography informs my approach to composition and visual hierarchy.", date: "Nov 2025", readTime: "4 min read", gradient: "from-amber-500/20 to-orange-600/20", tag: "Creative" },
-];
-
-const defaultTestimonials: Testimonial[] = [
-    { id: "t1", name: "Adaeze O.", role: "Founder, Bloom Studios", content: "Dwayne completely transformed our digital presence. His eye for design combined with solid engineering skills is rare.", rating: 5, gradient: "from-emerald-500/10 to-teal-500/10" },
-    { id: "t2", name: "Michael K.", role: "CTO, InnovateTech", content: "Working with Dwayne was seamless. He understood the vision on day one and delivered ahead of schedule.", rating: 5, gradient: "from-blue-500/10 to-indigo-500/10" },
-    { id: "t3", name: "Fatima B.", role: "Product Manager, EduLeap", content: "The mobile app Dwayne built for us is beautiful and lightning-fast. Engagement jumped 40% in the first month.", rating: 5, gradient: "from-violet-500/10 to-purple-500/10" },
-];
 
 const DataStoreContext = createContext<DataStore | null>(null);
 
@@ -123,82 +55,268 @@ export function useDataStore() {
     return ctx;
 }
 
-function loadFromStorage<T>(key: string, fallback: T): T {
-    if (typeof window === "undefined") return fallback;
-    try {
-        const stored = localStorage.getItem(`portfolio_${key}`);
-        return stored ? JSON.parse(stored) : fallback;
-    } catch {
-        return fallback;
-    }
+// Map old Project format (camelCase) to new DB format (snake_case)
+function mapProjectFromLegacy(p: Record<string, unknown>): Project {
+    return {
+        id: (p.id as string) || "",
+        title: (p.title as string) || "",
+        description: (p.description as string) || "",
+        category: (p.category as Project["category"]) || "Web Dev",
+        status: (p.status as Project["status"]) || "Ongoing",
+        tech_stack: (p.tech_stack as string[]) || (p.techStack as string[]) || [],
+        gradient: (p.gradient as string) || "from-emerald-500 to-teal-600",
+        icon: (p.icon as string) || "🚀",
+        long_description: (p.long_description as string) || (p.longDescription as string) || undefined,
+        challenge: (p.challenge as string) || undefined,
+        solution: (p.solution as string) || undefined,
+        results: (p.results as string) || undefined,
+        images: (p.images as string[]) || [],
+        live_url: (p.live_url as string) || (p.liveUrl as string) || undefined,
+        repo_url: (p.repo_url as string) || (p.repoUrl as string) || undefined,
+        sort_order: (p.sort_order as number) || 0,
+        created_at: (p.created_at as string) || undefined,
+        updated_at: (p.updated_at as string) || undefined,
+    };
 }
 
-function saveToStorage(key: string, value: unknown) {
-    if (typeof window === "undefined") return;
-    localStorage.setItem(`portfolio_${key}`, JSON.stringify(value));
+function mapProfileFromLegacy(p: Record<string, unknown>): Profile {
+    return {
+        id: (p.id as string) || undefined,
+        name: (p.name as string) || "Dwayne",
+        tagline: (p.tagline as string) || "",
+        bio: (p.bio as string) || "",
+        location: (p.location as string) || "",
+        email: (p.email as string) || "",
+        interests: (p.interests as string[]) || [],
+        social_links: (p.social_links as Profile["social_links"]) || (p.socialLinks as Profile["social_links"]) || [],
+    };
 }
 
 export function DataProvider({ children }: { children: ReactNode }) {
-    const [projects, _setProjects] = useState<Project[]>([]);
-    const [videos, _setVideos] = useState<VideoItem[]>([]);
-    const [instagram, _setInstagram] = useState<InstagramPost[]>([]);
-    const [blog, _setBlog] = useState<BlogArticle[]>([]);
-    const [testimonials, _setTestimonials] = useState<Testimonial[]>([]);
-    const [profile, _setProfile] = useState<ProfileData>(defaultProfile);
-    const [loaded, setLoaded] = useState(false);
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [videos, setVideos] = useState<VideoItem[]>([]);
+    const [instagram, setInstagram] = useState<InstagramPost[]>([]);
+    const [blog, setBlog] = useState<BlogArticle[]>([]);
+    const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+    const [profile, setProfile] = useState<Profile>(mapProfileFromLegacy(defaultProfile as unknown as Record<string, unknown>));
+    const [loading, setLoading] = useState(true);
 
-    // Load from localStorage on mount
-    useEffect(() => {
-        _setProjects(loadFromStorage("projects", defaultProjects));
-        _setVideos(loadFromStorage("videos", defaultVideos));
-        _setInstagram(loadFromStorage("instagram", defaultInstagram));
-        _setBlog(loadFromStorage("blog", defaultBlog));
-        _setTestimonials(loadFromStorage("testimonials", defaultTestimonials));
-        _setProfile(loadFromStorage("profile", defaultProfile));
-        setLoaded(true);
+    const supabase = createClient();
+
+    // ── Fetch all data from Supabase ──
+    const refreshData = useCallback(async () => {
+        try {
+            const [
+                { data: projData },
+                { data: vidData },
+                { data: igData },
+                { data: blogData },
+                { data: testiData },
+                { data: profileData },
+            ] = await Promise.all([
+                supabase.from("projects").select("*").order("sort_order", { ascending: true }),
+                supabase.from("videos").select("*").order("sort_order", { ascending: true }),
+                supabase.from("instagram_posts").select("*").order("sort_order", { ascending: true }),
+                supabase.from("blog_articles").select("*").order("sort_order", { ascending: true }),
+                supabase.from("testimonials").select("*").order("sort_order", { ascending: true }),
+                supabase.from("profile").select("*").limit(1).single(),
+            ]);
+
+            if (projData) setProjects(projData.map((p) => mapProjectFromLegacy(p as unknown as Record<string, unknown>)));
+            if (vidData) setVideos(vidData as VideoItem[]);
+            if (igData) setInstagram(igData as InstagramPost[]);
+            if (blogData) setBlog(blogData as BlogArticle[]);
+            if (testiData) setTestimonials(testiData as Testimonial[]);
+            if (profileData) setProfile(mapProfileFromLegacy(profileData as unknown as Record<string, unknown>));
+        } catch (err) {
+            console.error("Failed to fetch data from Supabase:", err);
+            // Fall back to defaults
+            setProjects(defaultProjects.map((p) => mapProjectFromLegacy(p as unknown as Record<string, unknown>)));
+        } finally {
+            setLoading(false);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Persist helpers
-    const setProjects = useCallback((v: Project[]) => { _setProjects(v); saveToStorage("projects", v); }, []);
-    const setVideos = useCallback((v: VideoItem[]) => { _setVideos(v); saveToStorage("videos", v); }, []);
-    const setInstagram = useCallback((v: InstagramPost[]) => { _setInstagram(v); saveToStorage("instagram", v); }, []);
-    const setBlog = useCallback((v: BlogArticle[]) => { _setBlog(v); saveToStorage("blog", v); }, []);
-    const setTestimonials = useCallback((v: Testimonial[]) => { _setTestimonials(v); saveToStorage("testimonials", v); }, []);
-    const setProfile = useCallback((v: ProfileData) => { _setProfile(v); saveToStorage("profile", v); }, []);
+    useEffect(() => {
+        refreshData();
+    }, [refreshData]);
 
-    // CRUD helpers
-    const addProject = useCallback((p: Project) => setProjects([...projects, p]), [projects, setProjects]);
-    const updateProject = useCallback((id: string, data: Partial<Project>) => setProjects(projects.map(p => p.id === id ? { ...p, ...data } : p)), [projects, setProjects]);
-    const deleteProject = useCallback((id: string) => setProjects(projects.filter(p => p.id !== id)), [projects, setProjects]);
+    // ── Projects CRUD ──
+    const addProject = useCallback(async (project: Omit<Project, "id">) => {
+        const { data, error } = await supabase.from("projects").insert(project).select().single();
+        if (error) { console.error("addProject error:", error); return; }
+        setProjects((prev) => [...prev, mapProjectFromLegacy(data as unknown as Record<string, unknown>)]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    const addVideo = useCallback((v: VideoItem) => setVideos([...videos, v]), [videos, setVideos]);
-    const updateVideo = useCallback((id: string, data: Partial<VideoItem>) => setVideos(videos.map(v => v.id === id ? { ...v, ...data } : v)), [videos, setVideos]);
-    const deleteVideo = useCallback((id: string) => setVideos(videos.filter(v => v.id !== id)), [videos, setVideos]);
+    const updateProject = useCallback(async (id: string, data: Partial<Project>) => {
+        const { error } = await supabase.from("projects").update({ ...data, updated_at: new Date().toISOString() }).eq("id", id);
+        if (error) { console.error("updateProject error:", error); return; }
+        setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, ...data } : p)));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    const addInstagramPost = useCallback((p: InstagramPost) => setInstagram([...instagram, p]), [instagram, setInstagram]);
-    const updateInstagramPost = useCallback((id: string, data: Partial<InstagramPost>) => setInstagram(instagram.map(p => p.id === id ? { ...p, ...data } : p)), [instagram, setInstagram]);
-    const deleteInstagramPost = useCallback((id: string) => setInstagram(instagram.filter(p => p.id !== id)), [instagram, setInstagram]);
+    const deleteProject = useCallback(async (id: string) => {
+        const { error } = await supabase.from("projects").delete().eq("id", id);
+        if (error) { console.error("deleteProject error:", error); return; }
+        setProjects((prev) => prev.filter((p) => p.id !== id));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    const addBlogArticle = useCallback((a: BlogArticle) => setBlog([...blog, a]), [blog, setBlog]);
-    const updateBlogArticle = useCallback((id: string, data: Partial<BlogArticle>) => setBlog(blog.map(a => a.id === id ? { ...a, ...data } : a)), [blog, setBlog]);
-    const deleteBlogArticle = useCallback((id: string) => setBlog(blog.filter(a => a.id !== id)), [blog, setBlog]);
+    // ── Videos CRUD ──
+    const addVideo = useCallback(async (video: Omit<VideoItem, "id">) => {
+        const { data, error } = await supabase.from("videos").insert(video).select().single();
+        if (error) { console.error("addVideo error:", error); return; }
+        setVideos((prev) => [...prev, data as VideoItem]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    const addTestimonial = useCallback((t: Testimonial) => setTestimonials([...testimonials, t]), [testimonials, setTestimonials]);
-    const updateTestimonial = useCallback((id: string, data: Partial<Testimonial>) => setTestimonials(testimonials.map(t => t.id === id ? { ...t, ...data } : t)), [testimonials, setTestimonials]);
-    const deleteTestimonial = useCallback((id: string) => setTestimonials(testimonials.filter(t => t.id !== id)), [testimonials, setTestimonials]);
+    const updateVideo = useCallback(async (id: string, data: Partial<VideoItem>) => {
+        const { error } = await supabase.from("videos").update({ ...data, updated_at: new Date().toISOString() }).eq("id", id);
+        if (error) { console.error("updateVideo error:", error); return; }
+        setVideos((prev) => prev.map((v) => (v.id === id ? { ...v, ...data } : v)));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    if (!loaded) return null;
+    const deleteVideo = useCallback(async (id: string) => {
+        const { error } = await supabase.from("videos").delete().eq("id", id);
+        if (error) { console.error("deleteVideo error:", error); return; }
+        setVideos((prev) => prev.filter((v) => v.id !== id));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // ── Instagram CRUD ──
+    const addInstagramPost = useCallback(async (post: Omit<InstagramPost, "id">) => {
+        const { data, error } = await supabase.from("instagram_posts").insert(post).select().single();
+        if (error) { console.error("addInstagramPost error:", error); return; }
+        setInstagram((prev) => [...prev, data as InstagramPost]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const updateInstagramPost = useCallback(async (id: string, data: Partial<InstagramPost>) => {
+        const { error } = await supabase.from("instagram_posts").update(data).eq("id", id);
+        if (error) { console.error("updateInstagramPost error:", error); return; }
+        setInstagram((prev) => prev.map((p) => (p.id === id ? { ...p, ...data } : p)));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const deleteInstagramPost = useCallback(async (id: string) => {
+        const { error } = await supabase.from("instagram_posts").delete().eq("id", id);
+        if (error) { console.error("deleteInstagramPost error:", error); return; }
+        setInstagram((prev) => prev.filter((p) => p.id !== id));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // ── Blog CRUD ──
+    const addBlogArticle = useCallback(async (article: Omit<BlogArticle, "id">) => {
+        const { data, error } = await supabase.from("blog_articles").insert(article).select().single();
+        if (error) { console.error("addBlogArticle error:", error); return; }
+        setBlog((prev) => [...prev, data as BlogArticle]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const updateBlogArticle = useCallback(async (id: string, data: Partial<BlogArticle>) => {
+        const { error } = await supabase.from("blog_articles").update({ ...data, updated_at: new Date().toISOString() }).eq("id", id);
+        if (error) { console.error("updateBlogArticle error:", error); return; }
+        setBlog((prev) => prev.map((a) => (a.id === id ? { ...a, ...data } : a)));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const deleteBlogArticle = useCallback(async (id: string) => {
+        const { error } = await supabase.from("blog_articles").delete().eq("id", id);
+        if (error) { console.error("deleteBlogArticle error:", error); return; }
+        setBlog((prev) => prev.filter((a) => a.id !== id));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // ── Testimonials CRUD ──
+    const addTestimonial = useCallback(async (testimonial: Omit<Testimonial, "id">) => {
+        const { data, error } = await supabase.from("testimonials").insert(testimonial).select().single();
+        if (error) { console.error("addTestimonial error:", error); return; }
+        setTestimonials((prev) => [...prev, data as Testimonial]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const updateTestimonial = useCallback(async (id: string, data: Partial<Testimonial>) => {
+        const { error } = await supabase.from("testimonials").update(data).eq("id", id);
+        if (error) { console.error("updateTestimonial error:", error); return; }
+        setTestimonials((prev) => prev.map((t) => (t.id === id ? { ...t, ...data } : t)));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const deleteTestimonial = useCallback(async (id: string) => {
+        const { error } = await supabase.from("testimonials").delete().eq("id", id);
+        if (error) { console.error("deleteTestimonial error:", error); return; }
+        setTestimonials((prev) => prev.filter((t) => t.id !== id));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // ── Profile ──
+    const updateProfileFn = useCallback(async (data: Partial<Profile>) => {
+        // Get existing profile ID
+        const profileId = profile.id;
+        if (profileId) {
+            const { error } = await supabase.from("profile").update({ ...data, updated_at: new Date().toISOString() }).eq("id", profileId);
+            if (error) { console.error("updateProfile error:", error); return; }
+        }
+        setProfile((prev) => ({ ...prev, ...data }));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [profile.id]);
+
+    // ── Storage helpers ──
+    const uploadFile = useCallback(async (bucket: string, path: string, file: File): Promise<string | null> => {
+        const { error } = await supabase.storage.from(bucket).upload(path, file, { upsert: true });
+        if (error) { console.error("Upload error:", error); return null; }
+        const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+        return data.publicUrl;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const deleteFile = useCallback(async (bucket: string, path: string) => {
+        const { error } = await supabase.storage.from(bucket).remove([path]);
+        if (error) console.error("Delete file error:", error);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const getPublicUrl = useCallback((bucket: string, path: string): string => {
+        const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+        return data.publicUrl;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
-        <DataStoreContext.Provider value={{
-            projects, videos, instagram, blog, testimonials, profile,
-            setProjects, addProject, updateProject, deleteProject,
-            setVideos, addVideo, updateVideo, deleteVideo,
-            setInstagram, addInstagramPost, updateInstagramPost, deleteInstagramPost,
-            setBlog, addBlogArticle, updateBlogArticle, deleteBlogArticle,
-            setTestimonials, addTestimonial, updateTestimonial, deleteTestimonial,
-            setProfile,
-        }}>
+        <DataStoreContext.Provider
+            value={{
+                projects,
+                videos,
+                instagram,
+                blog,
+                testimonials,
+                profile,
+                loading,
+                addProject,
+                updateProject,
+                deleteProject,
+                addVideo,
+                updateVideo,
+                deleteVideo,
+                addInstagramPost,
+                updateInstagramPost,
+                deleteInstagramPost,
+                addBlogArticle,
+                updateBlogArticle,
+                deleteBlogArticle,
+                addTestimonial,
+                updateTestimonial,
+                deleteTestimonial,
+                updateProfile: updateProfileFn,
+                refreshData,
+                uploadFile,
+                deleteFile,
+                getPublicUrl,
+            }}
+        >
             {children}
         </DataStoreContext.Provider>
     );

@@ -109,7 +109,7 @@ export default function Contact() {
 
                         {/* Social links */}
                         <div className="mt-8 flex gap-3">
-                            {profile.socialLinks.map((link) => {
+                            {profile.social_links.map((link) => {
                                 const Icon = socialIcons[link.icon] || Github;
                                 return (
                                     <motion.a

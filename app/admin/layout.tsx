@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/app/lib/AuthProvider";
 import {
     LayoutDashboard,
     FolderKanban,
@@ -14,6 +15,8 @@ import {
     ChevronLeft,
     ChevronRight,
     ArrowLeft,
+    LogOut,
+    Loader2,
 } from "lucide-react";
 
 const navItems = [
@@ -28,7 +31,38 @@ const navItems = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
+    const router = useRouter();
+    const { user, loading, signOut } = useAuth();
     const [collapsed, setCollapsed] = useState(false);
+
+    // Don't apply the admin layout to the login page
+    if (pathname === "/admin/login") {
+        return <>{children}</>;
+    }
+
+    // Show loading while checking auth
+    if (loading) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-bg-primary">
+                <Loader2 size={24} className="animate-spin text-accent" />
+            </div>
+        );
+    }
+
+    // Redirect to login if not authenticated
+    if (!user) {
+        router.replace("/admin/login");
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-bg-primary">
+                <Loader2 size={24} className="animate-spin text-accent" />
+            </div>
+        );
+    }
+
+    const handleSignOut = async () => {
+        await signOut();
+        router.replace("/admin/login");
+    };
 
     return (
         <div className="flex min-h-screen bg-bg-primary">
@@ -68,8 +102,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                     key={item.href}
                                     href={item.href}
                                     className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${isActive
-                                            ? "bg-accent/10 text-accent"
-                                            : "text-text-secondary hover:bg-bg-secondary hover:text-text-primary"
+                                        ? "bg-accent/10 text-accent"
+                                        : "text-text-secondary hover:bg-bg-secondary hover:text-text-primary"
                                         }`}
                                     title={collapsed ? item.label : undefined}
                                 >
@@ -84,8 +118,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </div>
                 </nav>
 
-                {/* Back to site */}
-                <div className="border-t border-border p-2">
+                {/* Bottom section */}
+                <div className="border-t border-border p-2 space-y-1">
+                    {/* Back to site */}
                     <Link
                         href="/"
                         className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-text-tertiary transition-all hover:bg-bg-secondary hover:text-text-primary"
@@ -93,6 +128,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <ArrowLeft size={16} />
                         {!collapsed && <span>Back to Site</span>}
                     </Link>
+
+                    {/* Logout */}
+                    <button
+                        onClick={handleSignOut}
+                        className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-red-400/70 transition-all hover:bg-red-500/10 hover:text-red-400"
+                        title={collapsed ? "Sign out" : undefined}
+                    >
+                        <LogOut size={16} />
+                        {!collapsed && <span>Sign Out</span>}
+                    </button>
                 </div>
             </aside>
 

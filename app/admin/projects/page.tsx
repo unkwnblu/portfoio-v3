@@ -23,7 +23,7 @@ const emptyProject: Omit<Project, "id"> = {
     description: "",
     category: "Web Dev",
     status: "Ongoing",
-    techStack: [],
+    tech_stack: [],
     gradient: gradientOptions[0],
     icon: "🚀",
 };
@@ -49,12 +49,12 @@ export default function ProjectsAdmin() {
         setTechInput("");
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!form.title.trim()) return;
         if (creating) {
-            addProject({ ...form, id: `proj-${Date.now()}` } as Project);
+            await addProject(form);
         } else if (editing) {
-            updateProject(editing, form);
+            await updateProject(editing, form);
         }
         setCreating(false);
         setEditing(null);
@@ -69,12 +69,12 @@ export default function ProjectsAdmin() {
 
     const addTech = () => {
         if (!techInput.trim()) return;
-        setForm({ ...form, techStack: [...form.techStack, techInput.trim()] });
+        setForm({ ...form, tech_stack: [...form.tech_stack, techInput.trim()] });
         setTechInput("");
     };
 
     const removeTech = (index: number) => {
-        setForm({ ...form, techStack: form.techStack.filter((_, i) => i !== index) });
+        setForm({ ...form, tech_stack: form.tech_stack.filter((_, i) => i !== index) });
     };
 
     const showForm = creating || editing;
@@ -131,7 +131,7 @@ export default function ProjectsAdmin() {
                         <div className="sm:col-span-2">
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">Tech Stack</label>
                             <div className="flex flex-wrap gap-1.5 mb-2">
-                                {form.techStack.map((tech, i) => (
+                                {form.tech_stack.map((tech, i) => (
                                     <span key={i} className="inline-flex items-center gap-1 rounded-md border border-border bg-bg-secondary px-2 py-0.5 text-xs text-text-secondary">
                                         {tech}
                                         <button onClick={() => removeTech(i)} className="text-text-tertiary hover:text-red-400"><X size={10} /></button>
@@ -151,7 +151,7 @@ export default function ProjectsAdmin() {
                         </div>
                         <div className="sm:col-span-2">
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">Long Description</label>
-                            <textarea value={form.longDescription || ""} onChange={(e) => setForm({ ...form, longDescription: e.target.value })} rows={4} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent resize-none" placeholder="Detailed overview of the project..." />
+                            <textarea value={form.long_description || ""} onChange={(e) => setForm({ ...form, long_description: e.target.value })} rows={4} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent resize-none" placeholder="Detailed overview of the project..." />
                         </div>
                         <div className="sm:col-span-2">
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">The Challenge</label>
@@ -167,11 +167,11 @@ export default function ProjectsAdmin() {
                         </div>
                         <div>
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">Live URL</label>
-                            <input value={form.liveUrl || ""} onChange={(e) => setForm({ ...form, liveUrl: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="https://..." />
+                            <input value={form.live_url || ""} onChange={(e) => setForm({ ...form, live_url: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="https://..." />
                         </div>
                         <div>
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">Repo URL</label>
-                            <input value={form.repoUrl || ""} onChange={(e) => setForm({ ...form, repoUrl: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="https://github.com/..." />
+                            <input value={form.repo_url || ""} onChange={(e) => setForm({ ...form, repo_url: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="https://github.com/..." />
                         </div>
                     </div>
                     <div className="mt-5 flex gap-3">
@@ -190,7 +190,7 @@ export default function ProjectsAdmin() {
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="truncate font-semibold text-text-primary">{project.title}</p>
-                            <p className="truncate text-xs text-text-tertiary">{project.category} · {project.techStack.slice(0, 3).join(", ")}</p>
+                            <p className="truncate text-xs text-text-tertiary">{project.category} · {project.tech_stack.slice(0, 3).join(", ")}</p>
                         </div>
                         <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase ${project.status === "Completed" ? "bg-emerald-500/10 text-emerald-400" : "bg-amber-500/10 text-amber-400"}`}>
                             {project.status}

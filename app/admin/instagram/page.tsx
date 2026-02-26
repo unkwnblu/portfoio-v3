@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useDataStore, InstagramPost } from "@/app/lib/DataStore";
+import { useDataStore } from "@/app/lib/DataStore";
+import type { InstagramPost } from "@/app/types";
 import { Plus, Pencil, Trash2, Check, Heart } from "lucide-react";
 
 const gradientOptions = [
@@ -23,10 +24,10 @@ export default function InstagramAdmin() {
     const startEdit = (p: InstagramPost) => { setEditing(p.id); setCreating(false); setForm(p); };
     const handleCancel = () => { setCreating(false); setEditing(null); setForm(emptyPost); };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!form.caption.trim()) return;
-        if (creating) addInstagramPost({ ...form, id: `ig-${Date.now()}` });
-        else if (editing) updateInstagramPost(editing, form);
+        if (creating) await addInstagramPost(form);
+        else if (editing) await updateInstagramPost(editing, form);
         handleCancel();
     };
 
