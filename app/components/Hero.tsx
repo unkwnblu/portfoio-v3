@@ -114,7 +114,7 @@ export default function Hero() {
             className="relative flex min-h-screen items-center overflow-hidden"
         >
             {/* Huge background elements */}
-            <div className="pointer-events-none absolute inset-0">
+            <div className="pointer-events-none absolute inset-0 z-0">
                 <div className="hero-orb-1 absolute -left-60 -top-60 h-[700px] w-[700px] rounded-full bg-accent/6 blur-[150px]" />
                 <div className="hero-orb-2 absolute -right-40 bottom-0 h-[500px] w-[500px] rounded-full bg-accent/8 blur-[120px]" />
 
@@ -129,15 +129,30 @@ export default function Hero() {
                 />
             </div>
 
+            {/* Absolute Profile Image */}
+            <motion.div
+                initial={{ opacity: 0, y: 100 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
+                className="hero-image-wrapper pointer-events-none absolute bottom-0 right-0 z-0 hidden w-[550px] lg:block xl:right-[5%] xl:w-[700px] 2xl:right-[10%]"
+            >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                    src="/profile.png"
+                    alt="Profile Portrait"
+                    className="h-auto w-full object-bottom drop-shadow-2xl"
+                />
+            </motion.div>
+
             {/* Content Container */}
-            <div className="hero-content relative mx-auto w-full max-w-7xl px-6 pt-32 pb-16 lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
+            <div className="hero-content relative z-10 mx-auto w-full max-w-7xl px-6 pt-32 pb-16">
 
                 {/* Text Content Block */}
                 <motion.div
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
-                    className="max-w-2xl lg:max-w-none"
+                    className="max-w-3xl"
                 >
                     {/* Status badge */}
                     <motion.div variants={itemVariants}>
@@ -156,10 +171,12 @@ export default function Hero() {
                             <span className="block">{splitText("Developing")}</span>
                             <span className="block">
                                 {splitText("Seamless ")}
-                                <span className="gradient-text">
-                                    ("Experiences")
+                                <span className="whitespace-nowrap">
+                                    <span className="gradient-text">
+                                        {splitText("Experiences")}
+                                    </span>
+                                    <span className="text-accent hero-char inline-block">.</span>
                                 </span>
-                                <span className="text-accent hero-char inline-block">.</span>
                             </span>
                         </h1>
                     </div>
@@ -210,31 +227,6 @@ export default function Hero() {
                             Get in Touch
                         </button>
                     </motion.div>
-                </motion.div>
-
-                {/* Profile Image Block (Desktop Right Column) */}
-                <motion.div
-                    initial={{ opacity: 0, x: 30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
-                    className="hero-image-wrapper relative hidden lg:block mt-12 lg:mt-0"
-                >
-                    <div className="relative ml-auto w-full max-w-[550px] aspect-[4/5] xl:aspect-[3/4] overflow-hidden rounded-[2.5rem] bg-bg-card shadow-[0_30px_80px_-15px_rgba(0,0,0,0.3)] border border-accent/20 group">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                            src="/profile.png"
-                            alt="Profile Portrait"
-                            className="h-full w-full object-cover object-center transition-transform hover:scale-105 duration-1000"
-                        />
-
-                        {/* Decorative gradient overlays for blending/pop */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-bg-primary via-transparent to-transparent opacity-40 pointer-events-none" />
-                        <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[2.5rem] pointer-events-none" />
-
-                        {/* Floating glow effects */}
-                        <div className="absolute -bottom-16 -right-16 h-64 w-64 rounded-full bg-accent/30 blur-[60px] pointer-events-none opacity-50 transition-opacity duration-700 group-hover:opacity-80" />
-                        <div className="absolute -left-16 -top-16 h-64 w-64 rounded-full bg-accent/20 blur-[60px] pointer-events-none opacity-30" />
-                    </div>
                 </motion.div>
             </div>
 
