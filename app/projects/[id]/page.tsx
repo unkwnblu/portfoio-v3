@@ -10,9 +10,13 @@ import {
     Calendar,
     Tag,
     Layers,
+    X,
+    ChevronLeft,
+    ChevronRight
 } from "lucide-react";
 import { gsap } from "@/app/hooks/useGsap";
 import { useDataStore } from "@/app/lib/DataStore";
+import { useState } from "react";
 
 export default function ProjectDetailPage() {
     const params = useParams();
@@ -21,6 +25,23 @@ export default function ProjectDetailPage() {
     const sectionRef = useRef<HTMLDivElement>(null);
 
     const project = projects.find((p) => p.id === params.id);
+    const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+
+    const closeSlideshow = () => setSelectedImageIndex(null);
+    const prevImage = () => setSelectedImageIndex(prev => prev !== null && project?.images ? (prev === 0 ? project.images.length - 1 : prev - 1) : null);
+    const nextImage = () => setSelectedImageIndex(prev => prev !== null && project?.images ? (prev === project.images.length - 1 ? 0 : prev + 1) : null);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (selectedImageIndex === null) return;
+            if (e.key === "Escape") closeSlideshow();
+            if (e.key === "ArrowLeft") prevImage();
+            if (e.key === "ArrowRight") nextImage();
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [selectedImageIndex, project?.images]);
 
     useEffect(() => {
         if (!sectionRef.current || !project) return;
@@ -190,18 +211,22 @@ export default function ProjectDetailPage() {
                                 <h2 className="mb-4 text-xl font-bold text-text-primary">
                                     Gallery
                                 </h2>
-                                <div className="grid gap-4 sm:grid-cols-2">
+                                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                     {project.images.map((img, i) => (
                                         <div
                                             key={i}
-                                            className="aspect-video overflow-hidden rounded-2xl border border-border bg-bg-card"
+                                            onClick={() => setSelectedImageIndex(i)}
+                                            className="aspect-video overflow-hidden rounded-2xl border border-border bg-bg-card cursor-pointer group relative"
                                         >
                                             {/* eslint-disable-next-line @next/next/no-img-element */}
                                             <img
                                                 src={img}
                                                 alt={`${project.title} screenshot ${i + 1}`}
-                                                className="h-full w-full object-cover"
+                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                             />
+                                            <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                                <span className="bg-black/50 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-md">View full</span>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -309,6 +334,55 @@ export default function ProjectDetailPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Slideshow Modal */}
+            {selectedImageIndex !== null && project.images && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 sm:p-8">
+                    <button
+                        onClick={closeSlideshow}
+                        className="absolute top-6 right-6 z-50 rounded-full bg-white/10 p-2 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
+                    >
+                        <X size={24} />
+                    </button>
+
+                    {project.images.length > 1 && (
+                        <button
+                            onClick={prevImage}
+                            className="absolute left-4 sm:left-8 z-50 rounded-full bg-white/10 p-3 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
+                        >
+                            <ChevronLeft size={32} />
+                        </button>
+                    )}
+
+                    <div className="relative max-h-full max-w-full flex items-center justify-center h-full w-full">
+                        <motion.img
+                            key={selectedImageIndex}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{ duration: 0.2 }}
+                            src={project.images[selectedImageIndex]}
+                            alt={`Gallery image ${selectedImageIndex + 1}`}
+                            className="max-h-full max-w-full object-contain rounded-lg"
+                        />
+                    </div>
+
+                    {project.images.length > 1 && (
+                        <button
+                            onClick={nextImage}
+                            className="absolute right-4 sm:right-8 z-50 rounded-full bg-white/10 p-3 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
+                        >
+                            <ChevronRight size={32} />
+                        </button>
+                    )}
+
+                    <div className="absolute bottom-6 left-0 right-0 text-center z-50 pointer-events-none">
+                        <span className="rounded-full bg-black/60 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-md">
+                            {selectedImageIndex + 1} / {project.images.length}
+                        </span>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
