@@ -27,8 +27,20 @@ export default function BlogAdmin() {
 
     const handleSave = async () => {
         if (!form.title.trim()) return;
-        if (creating) await addBlogArticle(form);
-        else if (editing) await updateBlogArticle(editing, form);
+
+        // Auto-calculate Date and Read Time
+        const wordCount = (form.content || "").trim().split(/\s+/).length;
+        const autoReadTime = Math.max(1, Math.ceil(wordCount / 200)) + " min read";
+        const autoDate = new Date().toLocaleDateString("en-US", { month: "short", year: "numeric" });
+
+        const finalForm = {
+            ...form,
+            date: form.date || autoDate, // Keep existing date if editing, or set new
+            read_time: autoReadTime
+        };
+
+        if (creating) await addBlogArticle(finalForm);
+        else if (editing) await updateBlogArticle(editing, finalForm);
         handleCancel();
     };
 
@@ -70,15 +82,7 @@ export default function BlogAdmin() {
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">Tag</label>
                             <input value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="Design, Engineering, etc." />
                         </div>
-                        <div>
-                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Date</label>
-                            <input value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="Jan 2026" />
-                        </div>
-                        <div>
-                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Read Time</label>
-                            <input value={form.read_time} onChange={(e) => setForm({ ...form, read_time: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="5 min read" />
-                        </div>
-                        <div>
+                        <div className="sm:col-span-2">
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">Gradient</label>
                             <div className="flex flex-wrap gap-2">
                                 {gradientOptions.map((g) => (
