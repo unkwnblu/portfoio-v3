@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useDataStore } from "@/app/lib/DataStore";
 import type { InstagramPost } from "@/app/types";
 import { Plus, Trash2, Image as ImageIcon, Loader2 } from "lucide-react";
+import heic2any from "heic2any";
 
 export default function InstagramAdmin() {
     const { instagram, addInstagramPost, deleteInstagramPost, uploadFile, deleteFile } = useDataStore();
@@ -23,9 +24,35 @@ export default function InstagramAdmin() {
         setUploading(true);
 
         try {
-            for (const file of filesToUpload) {
-                const path = `instagram/${Date.now()}-${file.name}`;
-                const url = await uploadFile("project-images", path, file);
+            for (let file of filesToUpload) {
+                // If the file is HEIC/HEIF, convert it to JPEG first
+                const extension = file.name.split(".").pop()?.toLowerCase();
+                const isHeic = extension === "heic" || extension === "heif";
+                let uploadFilePayload = file;
+                let uploadName = file.name;
+
+                if (isHeic) {
+                    try {
+                        const convertedBlob = await heic2any({
+                            blob: file,
+                            toType: "image/jpeg",
+                            quality: 0.8,
+                        });
+
+                        // heic2any can return an array of blobs if it's an image sequence, we just grab the first
+                        const finalBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+                        const originalNameWithoutExt = file.name.substring(0, file.name.lastIndexOf("."));
+
+                        uploadName = `${originalNameWithoutExt}.jpeg`;
+                        uploadFilePayload = new File([finalBlob], uploadName, { type: "image/jpeg" });
+                    } catch (convErr) {
+                        console.error("HEIC conversion failed for", file.name, convErr);
+                        continue; // Skip this file if conversion totally failed
+                    }
+                }
+
+                const path = `instagram/${Date.now()}-${uploadName}`;
+                const url = await uploadFile("project-images", path, uploadFilePayload);
                 if (url) {
                     await addInstagramPost({
                         gradient: "from-gray-500 to-gray-600",
