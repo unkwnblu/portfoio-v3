@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Github, Linkedin, Twitter, Heart } from "lucide-react";
+import { Github, Linkedin, Twitter, Heart, Instagram, Youtube, Facebook } from "lucide-react";
 import { gsap } from "@/app/hooks/useGsap";
 import { useDataStore } from "@/app/lib/DataStore";
 
@@ -9,6 +9,9 @@ const socialIcons: Record<string, React.ElementType> = {
     github: Github,
     linkedin: Linkedin,
     twitter: Twitter,
+    instagram: Instagram,
+    youtube: Youtube,
+    facebook: Facebook,
 };
 
 const footerNavLinks = [
