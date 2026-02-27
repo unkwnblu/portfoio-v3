@@ -97,11 +97,11 @@ export default function Hero() {
         return () => ctx.revert();
     }, []);
 
-    const splitText = (text: string) =>
+    const splitText = (text: string, extraClass: string = "") =>
         text.split("").map((char, i) => (
             <span
                 key={i}
-                className="hero-char inline-block"
+                className={`hero-char inline-block ${extraClass}`}
                 style={{ perspective: "600px" }}
             >
                 {char === " " ? "\u00A0" : char}
@@ -134,13 +134,13 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 100 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
-                className="hero-image-wrapper pointer-events-none absolute bottom-0 right-0 z-0 hidden w-[550px] lg:block xl:right-[5%] xl:w-[700px] 2xl:right-[10%]"
+                className="hero-image-wrapper pointer-events-none absolute bottom-0 right-[-10%] z-0 hidden h-[90vh] lg:block xl:right-[-5%] 2xl:right-[5%]"
             >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                     src="/profile.png"
                     alt="Profile Portrait"
-                    className="h-auto w-full object-bottom drop-shadow-2xl"
+                    className="h-full w-auto object-bottom drop-shadow-2xl grayscale-[20%] contrast-125"
                 />
             </motion.div>
 
@@ -172,10 +172,10 @@ export default function Hero() {
                             <span className="block">
                                 {splitText("Seamless ")}
                                 <span className="whitespace-nowrap">
-                                    <span className="gradient-text">
-                                        {splitText("Experiences")}
+                                    <span className="pr-1">
+                                        {splitText('"Experiences"', "gradient-text")}
                                     </span>
-                                    <span className="text-accent hero-char inline-block">.</span>
+                                    <span className="text-accent font-bold">.</span>
                                 </span>
                             </span>
                         </h1>
