@@ -76,14 +76,14 @@ export default function VideoShowcase() {
                 </motion.div>
 
                 {/* Video grid */}
-                <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 lg:grid-rows-3 lg:h-[600px] grid-flow-row-dense">
+                <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 lg:grid-rows-2 lg:h-[500px] grid-flow-row-dense">
                     {videos.map((video) => {
                         const isPortrait = video.orientation === "portrait";
                         return (
                             <div
                                 key={video.title}
                                 className={`video-card glow-border group relative flex flex-col overflow-hidden rounded-2xl bg-bg-card ${isPortrait
-                                    ? "md:col-span-1 lg:col-span-2 lg:row-span-3 min-h-[400px] lg:min-h-0"
+                                    ? "md:col-span-1 lg:col-span-1 lg:row-span-2 min-h-[400px] lg:min-h-0"
                                     : "md:col-span-1 lg:col-span-2 lg:row-span-1 min-h-[250px] lg:min-h-0"
                                     }`}
                             >
