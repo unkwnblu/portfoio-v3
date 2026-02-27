@@ -158,7 +158,7 @@ export default function ProjectDetailPage() {
                             <h2 className="mb-4 text-xl font-bold text-text-primary">
                                 Overview
                             </h2>
-                            <p className="text-base leading-relaxed text-text-secondary">
+                            <p className="text-base leading-relaxed text-text-secondary whitespace-pre-wrap">
                                 {project.long_description || project.description}
                             </p>
                         </section>
@@ -170,7 +170,7 @@ export default function ProjectDetailPage() {
                                     The Challenge
                                 </h2>
                                 <div className="rounded-2xl border border-border bg-bg-card p-6">
-                                    <p className="text-sm leading-relaxed text-text-secondary">
+                                    <p className="text-sm leading-relaxed text-text-secondary whitespace-pre-wrap">
                                         {project.challenge}
                                     </p>
                                 </div>
@@ -184,7 +184,7 @@ export default function ProjectDetailPage() {
                                     The Solution
                                 </h2>
                                 <div className="rounded-2xl border border-border bg-bg-card p-6">
-                                    <p className="text-sm leading-relaxed text-text-secondary">
+                                    <p className="text-sm leading-relaxed text-text-secondary whitespace-pre-wrap">
                                         {project.solution}
                                     </p>
                                 </div>
@@ -198,7 +198,7 @@ export default function ProjectDetailPage() {
                                     Results & Impact
                                 </h2>
                                 <div className="rounded-2xl border border-accent/10 bg-accent/5 p-6">
-                                    <p className="text-sm leading-relaxed text-text-secondary">
+                                    <p className="text-sm leading-relaxed text-text-secondary whitespace-pre-wrap">
                                         {project.results}
                                     </p>
                                 </div>
