@@ -12,7 +12,7 @@ const gradientOptions = [
 ];
 
 const emptyVideo: Omit<VideoItem, "id"> = {
-    title: "", views: "0", likes: "0", gradient: gradientOptions[0], tag: "", duration: "0:00",
+    title: "", views: "0", likes: "0", gradient: gradientOptions[0], tag: "", duration: "0:00", orientation: "landscape"
 };
 
 export default function VideosAdmin() {
@@ -118,6 +118,13 @@ export default function VideosAdmin() {
                         <div>
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">Tag</label>
                             <input value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="Cinematic, Product, etc." />
+                        </div>
+                        <div>
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Orientation</label>
+                            <select value={form.orientation || "landscape"} onChange={(e) => setForm({ ...form, orientation: e.target.value as "portrait" | "landscape" })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent">
+                                <option value="landscape">Landscape</option>
+                                <option value="portrait">Portrait</option>
+                            </select>
                         </div>
                         <div>
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">Duration (Auto-filled on upload)</label>

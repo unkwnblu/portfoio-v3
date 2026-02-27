@@ -77,58 +77,66 @@ export default function VideoShowcase() {
 
                 {/* Video grid */}
                 <div className="grid gap-5 sm:grid-cols-2">
-                    {videos.map((video, index) => (
-                        <div
-                            key={video.title}
-                            className={`video-card glow-border group relative overflow-hidden rounded-2xl bg-bg-card ${index === 0 ? "sm:row-span-2" : ""
-                                }`}
-                        >
-                            {/* Video thumbnail */}
+                    {videos.map((video) => {
+                        const isPortrait = video.orientation === "portrait";
+                        return (
                             <div
-                                className={`relative ${!video.video_url ? `bg-gradient-to-br ${video.gradient}` : "bg-black"} ${index === 0 ? "h-64 sm:h-full" : "h-48"
-                                    } flex items-center justify-center overflow-hidden`}
+                                key={video.title}
+                                className={`video-card glow-border group relative flex flex-col overflow-hidden rounded-2xl bg-bg-card ${isPortrait ? "sm:row-span-2" : ""
+                                    }`}
                             >
-                                {video.video_url && (
-                                    <video src={video.video_url} className="absolute inset-0 h-full w-full object-cover opacity-80 transition-opacity duration-300 group-hover:opacity-100" muted autoPlay loop playsInline />
-                                )}
-                                {/* Play button */}
-                                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 backdrop-blur-md text-white transition-transform group-hover:scale-110">
-                                    <Play size={20} fill="white" />
+                                {/* Video thumbnail */}
+                                <div
+                                    className={`relative flex items-center justify-center overflow-hidden flex-1 ${!video.video_url ? `bg-gradient-to-br ${video.gradient}` : "bg-black"} ${isPortrait ? "min-h-[400px] h-full" : "h-48 shrink-0"
+                                        }`}
+                                >
+                                    {video.video_url && (
+                                        <video src={video.video_url} className="absolute inset-0 h-full w-full object-cover opacity-80 transition-opacity duration-300 group-hover:opacity-100" muted autoPlay loop playsInline />
+                                    )}
+                                    {/* Play button */}
+                                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 backdrop-blur-md text-white transition-transform group-hover:scale-110 z-10">
+                                        <Play size={20} fill="white" />
+                                    </div>
+
+                                    {/* Duration badge */}
+                                    <span className="absolute bottom-3 right-3 rounded-md bg-black/50 px-2 py-0.5 text-[11px] font-mono font-bold text-white backdrop-blur-sm z-20">
+                                        {video.duration}
+                                    </span>
+
+                                    {/* Tag */}
+                                    <span className="absolute left-3 top-3 rounded-full bg-white/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-md z-20">
+                                        {video.tag}
+                                    </span>
+
+                                    {/* Gradient overlay for text if portrait */}
+                                    {isPortrait && (
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90 z-10 pointer-events-none" />
+                                    )}
                                 </div>
 
-                                {/* Duration badge */}
-                                <span className="absolute bottom-3 right-3 rounded-md bg-black/50 px-2 py-0.5 text-[11px] font-mono font-bold text-white backdrop-blur-sm">
-                                    {video.duration}
-                                </span>
-
-                                {/* Tag */}
-                                <span className="absolute left-3 top-3 rounded-full bg-white/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-md">
-                                    {video.tag}
-                                </span>
-                            </div>
-
-                            {/* Info */}
-                            <div className="p-5">
-                                <h3 className="mb-3 font-bold text-text-primary group-hover:text-accent transition-colors">
-                                    {video.title}
-                                </h3>
-                                <div className="flex items-center gap-4 text-xs text-text-tertiary">
-                                    <span className="flex items-center gap-1">
-                                        <Play size={10} />
-                                        {video.views} views
-                                    </span>
-                                    <span className="flex items-center gap-1">
-                                        <Heart size={10} />
-                                        {video.likes}
-                                    </span>
-                                    <span className="flex items-center gap-1">
-                                        <MessageCircle size={10} />
-                                        Reply
-                                    </span>
+                                {/* Info */}
+                                <div className={`p-5 flex flex-col justify-end ${isPortrait ? "absolute bottom-0 left-0 right-0 z-20" : ""}`}>
+                                    <h3 className={`mb-3 font-bold transition-colors ${isPortrait ? "text-white group-hover:text-accent" : "text-text-primary group-hover:text-accent"}`}>
+                                        {video.title}
+                                    </h3>
+                                    <div className={`flex items-center gap-4 text-xs ${isPortrait ? "text-white/80" : "text-text-tertiary"}`}>
+                                        <span className="flex items-center gap-1">
+                                            <Play size={10} />
+                                            {video.views} views
+                                        </span>
+                                        <span className="flex items-center gap-1">
+                                            <Heart size={10} />
+                                            {video.likes}
+                                        </span>
+                                        <span className="flex items-center gap-1">
+                                            <MessageCircle size={10} />
+                                            Reply
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 {/* View more */}

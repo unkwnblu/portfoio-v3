@@ -34,6 +34,7 @@ export interface VideoItem {
   duration: string;
   video_url?: string;
   thumbnail_url?: string;
+  orientation?: "portrait" | "landscape";
   sort_order?: number;
   created_at?: string;
   updated_at?: string;
