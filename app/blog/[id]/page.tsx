@@ -10,11 +10,13 @@ import { useDataStore } from "@/app/lib/DataStore";
 export default function BlogDetailPage() {
     const params = useParams();
     const router = useRouter();
-    const { blog } = useDataStore();
+    const { blog, profile, projects } = useDataStore();
     const sectionRef = useRef<HTMLDivElement>(null);
     const [copied, setCopied] = useState(false);
 
     const article = blog.find((a) => a.id === params.id);
+    const relatedArticles = blog.filter((a) => a.id !== params.id).slice(0, 3);
+    const featuredProject = projects.length > 0 ? projects[0] : null;
 
     useEffect(() => {
         if (!sectionRef.current || !article) return;
@@ -116,9 +118,11 @@ export default function BlogDetailPage() {
                 </div>
             </div>
 
-            {/* Content area */}
-            <div className="mx-auto max-w-3xl px-6 py-16">
-                <div className="detail-content space-y-12">
+            {/* Two-Column Content Layout */}
+            <div className="mx-auto max-w-7xl px-6 py-16 lg:grid lg:grid-cols-[1fr_320px] lg:gap-16 items-start">
+
+                {/* Left Column: Article Body */}
+                <div className="detail-content space-y-12 min-w-0">
                     {/* Share bar */}
                     <div className="flex items-center justify-between border-b border-border pb-6">
                         <p className="text-sm text-text-tertiary">Share this article</p>
@@ -162,6 +166,93 @@ export default function BlogDetailPage() {
                         </button>
                     </div>
                 </div>
+
+                {/* Right Column: Sticky Sidebar */}
+                <aside className="detail-sidebar hidden lg:flex flex-col gap-8 sticky top-32">
+
+                    {/* Author Profile Block */}
+                    <div className="rounded-2xl border border-border bg-bg-card p-6 shadow-sm">
+                        <div className="flex items-center gap-4 mb-4">
+                            <div className="h-16 w-16 overflow-hidden rounded-full border border-accent/20 bg-bg-secondary shrink-0">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                    src="/profile.png"
+                                    alt="Author"
+                                    className="h-full w-full object-cover object-top"
+                                />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-text-primary">{profile.name}</h3>
+                                <p className="text-sm text-accent">Author</p>
+                            </div>
+                        </div>
+                        <p className="text-sm leading-relaxed text-text-secondary mb-4 line-clamp-3">
+                            {profile.bio}
+                        </p>
+                        <button
+                            onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}
+                            className="w-full rounded-xl bg-bg-secondary px-4 py-2.5 text-sm font-semibold text-text-primary transition-all hover:bg-border"
+                        >
+                            Get in Touch
+                        </button>
+                    </div>
+
+                    {/* Related Articles */}
+                    {relatedArticles.length > 0 && (
+                        <div className="rounded-2xl border border-border bg-bg-card p-6 shadow-sm">
+                            <h3 className="mb-4 text-sm font-bold tracking-wider text-text-tertiary uppercase">
+                                Keep Reading
+                            </h3>
+                            <div className="flex flex-col gap-4">
+                                {relatedArticles.map((rel) => (
+                                    <button
+                                        key={rel.id}
+                                        onClick={() => router.push(`/blog/${rel.id}`)}
+                                        className="group flex flex-col gap-1 text-left"
+                                    >
+                                        <h4 className="text-sm font-semibold text-text-primary transition-colors group-hover:text-accent line-clamp-2">
+                                            {rel.title}
+                                        </h4>
+                                        <div className="flex items-center gap-2 text-xs text-text-tertiary mt-1">
+                                            <span>{rel.date}</span>
+                                            <span className="h-1 w-1 rounded-full bg-border" />
+                                            <span>{rel.read_time}</span>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Featured Project */}
+                    {featuredProject && (
+                        <div className="rounded-2xl border border-border bg-bg-card p-6 shadow-sm">
+                            <h3 className="mb-4 text-sm font-bold tracking-wider text-text-tertiary uppercase">
+                                Latest Work
+                            </h3>
+                            <button
+                                onClick={() => router.push(`/projects/${featuredProject.id}`)}
+                                className="group relative block w-full overflow-hidden rounded-xl border border-border"
+                            >
+                                <div className="aspect-[16/9] w-full bg-bg-secondary relative overflow-hidden">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                        src={featuredProject.banner_url || "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop"}
+                                        alt={featuredProject.title}
+                                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 flex items-center justify-center">
+                                        <span className="rounded-lg bg-accent px-4 py-2 text-xs font-bold text-white shadow-lg">View Project</span>
+                                    </div>
+                                </div>
+                                <div className="bg-bg-card p-4">
+                                    <h4 className="text-sm font-bold text-text-primary truncate">{featuredProject.title}</h4>
+                                    <p className="text-xs text-text-secondary truncate mt-1">{featuredProject.tech_stack.join(" • ")}</p>
+                                </div>
+                            </button>
+                        </div>
+                    )}
+                </aside>
             </div>
         </div>
     );
