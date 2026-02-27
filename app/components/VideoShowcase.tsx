@@ -85,9 +85,12 @@ export default function VideoShowcase() {
                         >
                             {/* Video thumbnail */}
                             <div
-                                className={`relative bg-gradient-to-br ${video.gradient} ${index === 0 ? "h-64 sm:h-full" : "h-48"
-                                    } flex items-center justify-center`}
+                                className={`relative ${!video.video_url ? `bg-gradient-to-br ${video.gradient}` : "bg-black"} ${index === 0 ? "h-64 sm:h-full" : "h-48"
+                                    } flex items-center justify-center overflow-hidden`}
                             >
+                                {video.video_url && (
+                                    <video src={video.video_url} className="absolute inset-0 h-full w-full object-cover opacity-80 transition-opacity duration-300 group-hover:opacity-100" muted autoPlay loop playsInline />
+                                )}
                                 {/* Play button */}
                                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 backdrop-blur-md text-white transition-transform group-hover:scale-110">
                                     <Play size={20} fill="white" />

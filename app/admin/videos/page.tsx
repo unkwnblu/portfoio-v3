@@ -16,14 +16,56 @@ const emptyVideo: Omit<VideoItem, "id"> = {
 };
 
 export default function VideosAdmin() {
-    const { videos, addVideo, updateVideo, deleteVideo } = useDataStore();
+    const { videos, addVideo, updateVideo, deleteVideo, uploadFile } = useDataStore();
     const [editing, setEditing] = useState<string | null>(null);
     const [creating, setCreating] = useState(false);
     const [form, setForm] = useState(emptyVideo);
+    const [isUploading, setIsUploading] = useState(false);
 
     const startCreate = () => { setCreating(true); setEditing(null); setForm(emptyVideo); };
     const startEdit = (v: VideoItem) => { setEditing(v.id); setCreating(false); setForm(v); };
     const handleCancel = () => { setCreating(false); setEditing(null); setForm(emptyVideo); };
+
+    const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsUploading(true);
+        try {
+            // Calculate video duration locally before upload
+            const videoUrlObj = URL.createObjectURL(file);
+            const videoElement = document.createElement('video');
+            videoElement.src = videoUrlObj;
+
+            videoElement.addEventListener('loadedmetadata', async () => {
+                const totalSeconds = Math.round(videoElement.duration);
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                const formattedDuration = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                URL.revokeObjectURL(videoUrlObj);
+
+                // Now upload to Supabase
+                const path = `showcase/${Date.now()}-${file.name}`;
+                const url = await uploadFile("videos", path, file);
+
+                if (url) {
+                    setForm(prev => ({ ...prev, video_url: url, duration: formattedDuration }));
+                }
+                setIsUploading(false);
+            });
+
+            videoElement.addEventListener('error', () => {
+                console.error("Error loading video metadata locally.");
+                URL.revokeObjectURL(videoUrlObj);
+                setIsUploading(false);
+            });
+
+        } catch (error) {
+            console.error("Upload failed", error);
+            setIsUploading(false);
+        }
+    };
 
     const handleSave = async () => {
         if (!form.title.trim()) return;
@@ -53,6 +95,23 @@ export default function VideosAdmin() {
                     <h2 className="mb-5 text-lg font-semibold text-text-primary">{creating ? "New Video" : "Edit Video"}</h2>
                     <div className="grid gap-4 sm:grid-cols-2">
                         <div className="sm:col-span-2">
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Video File</label>
+                            <div className="flex items-center gap-4">
+                                {form.video_url && (
+                                    <div className="h-16 w-32 relative overflow-hidden rounded-lg bg-black border border-border">
+                                        <video src={form.video_url} className="h-full w-full object-cover opacity-70" muted />
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <Play size={16} className="text-white drop-shadow-md" />
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="flex-1 text-sm">
+                                    <input type="file" accept="video/mp4,video/x-m4v,video/*" onChange={handleVideoUpload} disabled={isUploading} className="block w-full text-sm text-text-secondary file:mr-4 file:rounded-full file:border-0 file:bg-bg-secondary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-accent hover:file:bg-bg-card-hover" />
+                                    {isUploading && <p className="mt-1 text-xs text-text-tertiary">Uploading & processing...</p>}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="sm:col-span-2">
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">Title</label>
                             <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="Video title" />
                         </div>
@@ -61,7 +120,7 @@ export default function VideosAdmin() {
                             <input value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="Cinematic, Product, etc." />
                         </div>
                         <div>
-                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Duration</label>
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Duration (Auto-filled on upload)</label>
                             <input value={form.duration} onChange={(e) => setForm({ ...form, duration: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="0:45" />
                         </div>
                         <div>
