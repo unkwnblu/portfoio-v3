@@ -26,6 +26,7 @@ const emptyProject: Omit<Project, "id"> = {
     tech_stack: [],
     gradient: gradientOptions[0],
     icon: "🚀",
+    images: [],
 };
 
 export default function ProjectsAdmin() {
@@ -96,6 +97,39 @@ export default function ProjectsAdmin() {
         }
     };
 
+    const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        if (files.length === 0) return;
+
+        const currentImages = form.images || [];
+        if (currentImages.length + files.length > 5) {
+            alert("Maximum 5 gallery images allowed.");
+            return;
+        }
+
+        setIsUploading(true);
+        try {
+            const uploadedUrls: string[] = [];
+            for (const file of files) {
+                const path = `project-gallery/${Date.now()}-${file.name}`;
+                const url = await uploadFile("project-images", path, file);
+                if (url) uploadedUrls.push(url);
+            }
+            if (uploadedUrls.length > 0) {
+                setForm({ ...form, images: [...currentImages, ...uploadedUrls] });
+            }
+        } catch (error) {
+            console.error("Gallery upload failed", error);
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    const removeGalleryImage = (index: number) => {
+        const currentImages = form.images || [];
+        setForm({ ...form, images: currentImages.filter((_, i) => i !== index) });
+    };
+
     const showForm = creating || editing;
 
     return (
@@ -156,8 +190,32 @@ export default function ProjectsAdmin() {
                                 )}
                                 <div className="flex-1 text-sm">
                                     <input type="file" accept="image/*" onChange={handleBannerUpload} disabled={isUploading} className="block w-full text-sm text-text-secondary file:mr-4 file:rounded-full file:border-0 file:bg-bg-secondary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-accent hover:file:bg-bg-card-hover" />
-                                    {isUploading && <p className="mt-1 text-xs text-text-tertiary">Uploading...</p>}
                                 </div>
+                            </div>
+                        </div>
+                        <div className="sm:col-span-2">
+                            <div className="flex items-center justify-between mb-1.5">
+                                <label className="block text-xs font-medium text-text-secondary">Gallery Images (Max 5)</label>
+                                <span className="text-xs text-text-tertiary">{(form.images || []).length} / 5</span>
+                            </div>
+                            <div className="space-y-3">
+                                {form.images && form.images.length > 0 && (
+                                    <div className="flex flex-wrap gap-2">
+                                        {form.images.map((imgUrl, idx) => (
+                                            <div key={idx} className="relative group">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img src={imgUrl} alt="Gallery Preview" className="h-16 w-24 object-cover rounded-lg border border-border" />
+                                                <button onClick={() => removeGalleryImage(idx)} className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white opacity-0 transition-opacity group-hover:opacity-100"><X size={10} /></button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                {(form.images || []).length < 5 && (
+                                    <div className="flex-1 text-sm">
+                                        <input type="file" accept="image/*" multiple onChange={handleGalleryUpload} disabled={isUploading} className="block w-full text-sm text-text-secondary file:mr-4 file:rounded-full file:border-0 file:bg-bg-secondary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-accent hover:file:bg-bg-card-hover" />
+                                    </div>
+                                )}
+                                {isUploading && <p className="mt-1 text-xs text-text-tertiary focus:outline-none">Uploading asset(s)...</p>}
                             </div>
                         </div>
                         <div className="sm:col-span-2">

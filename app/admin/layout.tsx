@@ -76,7 +76,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     {!collapsed && (
                         <div>
                             <h1 className="text-base font-bold text-text-primary">
-                                <span className="gradient-text">D</span>wayne
+                                <span className="gradient-text">Dwayne</span>
+                                <span>Agbale</span>
                                 <span className="gradient-text">.</span>
                             </h1>
                             <p className="text-[10px] font-medium uppercase tracking-wider text-text-tertiary">
