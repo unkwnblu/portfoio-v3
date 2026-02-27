@@ -5,21 +5,47 @@ import { Camera, Tv, Video, MapPin, Briefcase, GraduationCap } from "lucide-reac
 import { gsap } from "@/app/hooks/useGsap";
 import { useDataStore } from "@/app/lib/DataStore";
 
-const interests = [
-    { label: "Photography", emoji: "📸", color: "from-orange-500 to-amber-500" },
-    { label: "Anime", emoji: "🎬", color: "from-pink-500 to-rose-500" },
-    { label: "Videography", emoji: "🎥", color: "from-blue-500 to-cyan-500" },
-];
+const getInterestColor = (index: number) => {
+    const colors = [
+        "from-orange-500 to-amber-500",
+        "from-pink-500 to-rose-500",
+        "from-blue-500 to-cyan-500",
+        "from-emerald-500 to-teal-500",
+        "from-violet-500 to-purple-500",
+    ];
+    return colors[index % colors.length];
+};
 
-const stats = [
-    { value: "20+", label: "Projects built" },
-    { value: "2+", label: "Years experience" },
-    { value: "15+", label: "Happy clients" },
-];
+const getEmojiForInterest = (interest: string) => {
+    const map: Record<string, string> = {
+        "photography": "📸",
+        "anime": "🎬",
+        "videography": "🎥",
+        "coding": "💻",
+        "design": "🎨",
+        "music": "🎵",
+        "gaming": "🎮",
+        "reading": "📚",
+        "travel": "✈️"
+    };
+    return map[interest.toLowerCase()] || "✨";
+};
 
 export default function About() {
-    const { profile } = useDataStore();
+    const { profile, projects, testimonials } = useDataStore();
     const sectionRef = useRef<HTMLDivElement>(null);
+
+    const stats = [
+        { value: `${projects.length}+`, label: "Projects built" },
+        { value: `${Math.max(2, new Date().getFullYear() - 2024)}+`, label: "Years experience" },
+        { value: `${testimonials.length}+`, label: "Happy clients" },
+    ];
+
+    const formattedInterests = profile.interests.map((interest, i) => ({
+        label: interest,
+        emoji: getEmojiForInterest(interest),
+        color: getInterestColor(i)
+    }));
 
     useEffect(() => {
         if (!sectionRef.current) return;
@@ -179,7 +205,7 @@ export default function About() {
 
                     {/* Interest tiles */}
                     <div className="about-interests-row contents">
-                        {interests.map((interest) => (
+                        {formattedInterests.map((interest) => (
                             <div
                                 key={interest.label}
                                 className="about-interest glow-border group relative overflow-hidden rounded-2xl bg-bg-card p-6 transition-transform duration-300 hover:-translate-y-1"
