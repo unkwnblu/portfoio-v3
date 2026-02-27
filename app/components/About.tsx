@@ -142,7 +142,7 @@ export default function About() {
         }, sectionRef);
 
         return () => ctx.revert();
-    }, []);
+    }, [projects.length, testimonials.length]);
 
     return (
         <section ref={sectionRef} id="about" className="relative py-32 overflow-hidden">
