@@ -154,26 +154,55 @@ export default function VideosAdmin() {
                 </div>
             )}
 
-            <div className="grid gap-4 sm:grid-cols-2">
-                {videos.map((video) => (
-                    <div key={video.id} className="group rounded-2xl border border-border bg-bg-card overflow-hidden transition-all hover:border-accent/10">
-                        <div className={`relative flex h-32 items-center justify-center bg-gradient-to-br ${video.gradient}`}>
-                            <Play size={24} className="text-white/60" />
-                            <span className="absolute bottom-2 right-2 rounded bg-black/50 px-1.5 py-0.5 text-[10px] font-mono text-white">{video.duration}</span>
-                            <span className="absolute left-2 top-2 rounded-full bg-white/10 px-2 py-0.5 text-[9px] font-bold uppercase text-white backdrop-blur-sm">{video.tag}</span>
-                        </div>
-                        <div className="flex items-center gap-3 p-4">
-                            <div className="flex-1 min-w-0">
-                                <p className="truncate text-sm font-semibold text-text-primary">{video.title}</p>
-                                <p className="text-xs text-text-tertiary">{video.views} views · {video.likes} likes</p>
+            <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid-flow-row-dense">
+                {videos.map((video) => {
+                    const isPortrait = video.orientation === "portrait";
+                    return (
+                        <div
+                            key={video.id}
+                            className={`group relative flex flex-col rounded-2xl border border-border bg-bg-card overflow-hidden transition-all hover:border-accent/10 ${isPortrait
+                                    ? "md:col-span-1 lg:col-span-1 row-span-2 min-h-[400px]"
+                                    : "md:col-span-1 lg:col-span-2 row-span-1 min-h-[220px]"
+                                }`}
+                        >
+                            {/* Video thumbnail */}
+                            <div className={`relative flex flex-1 items-center justify-center ${!video.video_url ? `bg-gradient-to-br ${video.gradient}` : 'bg-black'} h-full w-full`}>
+                                {video.video_url && (
+                                    <video src={video.video_url} className="absolute inset-0 h-full w-full object-cover" muted autoPlay loop playsInline />
+                                )}
+                                {!video.video_url && (
+                                    <Play size={24} className="text-white/60 z-10" />
+                                )}
+
+                                <span className="absolute bottom-3 right-3 rounded bg-black/50 px-1.5 py-0.5 text-[10px] font-mono text-white z-20">
+                                    {video.duration}
+                                </span>
+                                <span className="absolute left-3 top-3 rounded-full bg-white/10 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white backdrop-blur-sm z-20">
+                                    {video.tag}
+                                </span>
+
+                                {/* Gradient overlay for text if portrait or fallback shadow for video readability */}
+                                {isPortrait ? (
+                                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-100 z-10 pointer-events-none" />
+                                ) : video.video_url && (
+                                    <div className="absolute inset-0 bg-black/10 transition-opacity duration-300 group-hover:bg-black/20 z-10 pointer-events-none" />
+                                )}
                             </div>
-                            <div className="flex shrink-0 gap-1">
-                                <button onClick={() => startEdit(video)} className="flex h-8 w-8 items-center justify-center rounded-lg text-text-tertiary hover:bg-bg-secondary hover:text-accent"><Pencil size={14} /></button>
-                                <button onClick={() => deleteVideo(video.id)} className="flex h-8 w-8 items-center justify-center rounded-lg text-text-tertiary hover:bg-red-500/10 hover:text-red-400"><Trash2 size={14} /></button>
+
+                            {/* Info */}
+                            <div className={`flex items-center gap-3 p-4 ${isPortrait ? 'absolute bottom-0 left-0 right-0 z-20' : ''}`}>
+                                <div className="flex-1 min-w-0">
+                                    <p className={`truncate text-sm font-semibold ${isPortrait ? 'text-white' : 'text-text-primary'}`}>{video.title}</p>
+                                    <p className={`text-xs ${isPortrait ? 'text-white/80' : 'text-text-tertiary'}`}>{video.views} views · {video.likes} likes</p>
+                                </div>
+                                <div className="flex shrink-0 gap-1 z-30">
+                                    <button onClick={() => startEdit(video)} className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${isPortrait ? 'text-white/80 hover:bg-white/20 hover:text-white' : 'text-text-tertiary hover:bg-bg-secondary hover:text-accent'}`}><Pencil size={14} /></button>
+                                    <button onClick={() => deleteVideo(video.id)} className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${isPortrait ? 'text-white/80 hover:bg-red-500/30 hover:text-red-300' : 'text-text-tertiary hover:bg-red-500/10 hover:text-red-400'}`}><Trash2 size={14} /></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
             {videos.length === 0 && (
                 <div className="rounded-2xl border border-dashed border-border bg-bg-card p-12 text-center">
