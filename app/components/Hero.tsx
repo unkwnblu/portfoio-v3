@@ -164,7 +164,20 @@ export default function Hero() {
                             />
                         ))}
                     </div>
-                    <div className="absolute inset-24 rounded-full bg-accent/3 blur-[40px]" />
+                    {/* Background glow behind image */}
+                    <div className="absolute inset-24 rounded-full bg-accent/10 blur-[40px]" />
+
+                    {/* Profile Image embedded inside the rings */}
+                    <div className="absolute inset-24 overflow-hidden rounded-full border-2 border-accent/20 bg-bg-card p-2 shadow-2xl">
+                        <div className="relative h-full w-full overflow-hidden rounded-full bg-bg-secondary">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src="/profile.png"
+                                alt="Profile"
+                                className="h-full w-full object-cover object-top"
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
 
