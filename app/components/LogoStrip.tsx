@@ -6,8 +6,8 @@ import { gsap } from "@/app/hooks/useGsap";
 const tools = [
     "React", "Next.js", "TypeScript", "Tailwind CSS", "Figma",
     "Node.js", "Python", "Supabase", "Flutter", "Arduino",
-    "PostgreSQL", "Docker", "Git", "Framer Motion", "Firebase",
-    "React Native", "TensorFlow", "Adobe XD",
+    "PostgreSQL", "Git", "Framer Motion", "Firebase",
+    "React Native", "TensorFlow", "Canva", "Davinci Resolve", "Swift", "GSAP"
 ];
 
 export default function LogoStrip() {

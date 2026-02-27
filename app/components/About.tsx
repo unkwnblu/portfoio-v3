@@ -37,7 +37,7 @@ export default function About() {
 
     const stats = [
         { value: `${projects.length}+`, label: "Projects built" },
-        { value: `${Math.max(2, new Date().getFullYear() - 2024)}+`, label: "Years experience" },
+        { value: `${Math.max(1, new Date().getFullYear() - 2021)}+`, label: "Years experience" },
         { value: `${testimonials.length}+`, label: "Happy clients" },
     ];
 
