@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { Camera, Tv, Video, MapPin, Briefcase, GraduationCap } from "lucide-react";
 import { gsap } from "@/app/hooks/useGsap";
-import { profile } from "@/app/data/profile";
+import { useDataStore } from "@/app/lib/DataStore";
 
 const interests = [
     { label: "Photography", emoji: "📸", color: "from-orange-500 to-amber-500" },
@@ -18,6 +18,7 @@ const stats = [
 ];
 
 export default function About() {
+    const { profile } = useDataStore();
     const sectionRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {

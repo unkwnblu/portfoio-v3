@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Mail, ArrowUpRight, Github, Linkedin, Twitter } from "lucide-react";
 import { gsap } from "@/app/hooks/useGsap";
-import { profile } from "@/app/data/profile";
+import { useDataStore } from "@/app/lib/DataStore";
 
 const socialIcons: Record<string, React.ElementType> = {
     github: Github,
@@ -13,6 +13,7 @@ const socialIcons: Record<string, React.ElementType> = {
 };
 
 export default function Contact() {
+    const { profile } = useDataStore();
     const sectionRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {

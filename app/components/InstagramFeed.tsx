@@ -4,19 +4,10 @@ import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Instagram, Heart, ExternalLink } from "lucide-react";
 import { gsap } from "@/app/hooks/useGsap";
-
-const igPosts = [
-    { gradient: "from-amber-400 to-orange-600", likes: "2.4K", caption: "Golden hour at the lake 🌅" },
-    { gradient: "from-blue-400 to-indigo-600", likes: "1.8K", caption: "Architecture details 🏛️" },
-    { gradient: "from-pink-400 to-rose-600", likes: "3.1K", caption: "Street photography walk 📸" },
-    { gradient: "from-emerald-400 to-teal-600", likes: "956", caption: "Nature macro shots 🌿" },
-    { gradient: "from-violet-400 to-purple-600", likes: "4.2K", caption: "Night city vibes 🌃" },
-    { gradient: "from-cyan-400 to-blue-600", likes: "1.5K", caption: "Studio portrait session 🎭" },
-    { gradient: "from-red-400 to-rose-600", likes: "2.7K", caption: "Behind the scenes 🎬" },
-    { gradient: "from-yellow-400 to-amber-600", likes: "1.1K", caption: "Sunset silhouettes 🌇" },
-];
+import { useDataStore } from "@/app/lib/DataStore";
 
 export default function InstagramFeed() {
+    const { instagram: igPosts } = useDataStore();
     const sectionRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {

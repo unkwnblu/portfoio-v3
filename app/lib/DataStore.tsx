@@ -71,6 +71,7 @@ function mapProjectFromLegacy(p: Record<string, unknown>): Project {
         solution: (p.solution as string) || undefined,
         results: (p.results as string) || undefined,
         images: (p.images as string[]) || [],
+        banner_url: (p.banner_url as string) || (p.bannerUrl as string) || undefined,
         live_url: (p.live_url as string) || (p.liveUrl as string) || undefined,
         repo_url: (p.repo_url as string) || (p.repoUrl as string) || undefined,
         sort_order: (p.sort_order as number) || 0,

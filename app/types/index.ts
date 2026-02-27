@@ -16,6 +16,7 @@ export interface Project {
   solution?: string;
   results?: string;
   images?: string[];
+  banner_url?: string;
   live_url?: string;
   repo_url?: string;
   sort_order?: number;

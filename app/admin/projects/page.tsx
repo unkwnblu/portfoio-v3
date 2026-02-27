@@ -29,11 +29,12 @@ const emptyProject: Omit<Project, "id"> = {
 };
 
 export default function ProjectsAdmin() {
-    const { projects, addProject, updateProject, deleteProject } = useDataStore();
+    const { projects, addProject, updateProject, deleteProject, uploadFile } = useDataStore();
     const [editing, setEditing] = useState<string | null>(null);
     const [creating, setCreating] = useState(false);
     const [form, setForm] = useState(emptyProject);
     const [techInput, setTechInput] = useState("");
+    const [isUploading, setIsUploading] = useState(false);
 
     const startCreate = () => {
         setCreating(true);
@@ -75,6 +76,24 @@ export default function ProjectsAdmin() {
 
     const removeTech = (index: number) => {
         setForm({ ...form, tech_stack: form.tech_stack.filter((_, i) => i !== index) });
+    };
+
+    const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsUploading(true);
+        try {
+            const path = `project-banners/${Date.now()}-${file.name}`;
+            const url = await uploadFile("project-images", path, file);
+            if (url) {
+                setForm({ ...form, banner_url: url });
+            }
+        } catch (error) {
+            console.error("Upload failed", error);
+        } finally {
+            setIsUploading(false);
+        }
     };
 
     const showForm = creating || editing;
@@ -127,6 +146,19 @@ export default function ProjectsAdmin() {
                             <select value={form.gradient} onChange={(e) => setForm({ ...form, gradient: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent">
                                 {gradientOptions.map((g) => <option key={g} value={g}>{g}</option>)}
                             </select>
+                        </div>
+                        <div className="sm:col-span-2">
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Banner Image</label>
+                            <div className="flex items-center gap-4">
+                                {form.banner_url && (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img src={form.banner_url} alt="Banner Preview" className="h-16 w-32 object-cover rounded-lg border border-border" />
+                                )}
+                                <div className="flex-1 text-sm">
+                                    <input type="file" accept="image/*" onChange={handleBannerUpload} disabled={isUploading} className="block w-full text-sm text-text-secondary file:mr-4 file:rounded-full file:border-0 file:bg-bg-secondary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-accent hover:file:bg-bg-card-hover" />
+                                    {isUploading && <p className="mt-1 text-xs text-text-tertiary">Uploading...</p>}
+                                </div>
+                            </div>
                         </div>
                         <div className="sm:col-span-2">
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">Tech Stack</label>

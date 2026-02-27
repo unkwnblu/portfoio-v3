@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowDown, Sparkles, Code2, Palette } from "lucide-react";
 import { gsap, ScrollTrigger } from "@/app/hooks/useGsap";
+import { useDataStore } from "@/app/lib/DataStore";
 
 const containerVariants = {
     hidden: {},
@@ -22,6 +23,7 @@ const itemVariants = {
 };
 
 export default function Hero() {
+    const { profile } = useDataStore();
     const sectionRef = useRef<HTMLDivElement>(null);
     const headlineRef = useRef<HTMLDivElement>(null);
     const ringRef = useRef<HTMLDivElement>(null);
@@ -216,10 +218,9 @@ export default function Hero() {
                     {/* Subtitle */}
                     <motion.p
                         variants={itemVariants}
-                        className="mt-6 max-w-lg text-base leading-relaxed text-text-secondary lg:text-lg"
+                        className="mt-6 max-w-lg text-base leading-relaxed text-text-secondary lg:text-lg whitespace-pre-line"
                     >
-                        Multi-disciplinary creative based in Nigeria — crafting
-                        pixel-perfect products from concept to deployment.
+                        {profile.tagline || "Multi-disciplinary creative based in Nigeria — crafting pixel-perfect products from concept to deployment."}
                     </motion.p>
 
                     {/* CTAs */}

@@ -3,38 +3,10 @@
 import { useEffect, useRef } from "react";
 import { Clock, ArrowUpRight } from "lucide-react";
 import { gsap } from "@/app/hooks/useGsap";
-
-const articles = [
-    {
-        title: "Every Pixel is a Storyteller: Why Details Matter in UI Design",
-        excerpt:
-            "Small design choices — spacing, color, micro-interactions — can make or break user trust. Here is how I approach pixel-level precision.",
-        date: "Jan 2026",
-        readTime: "5 min read",
-        gradient: "from-rose-500/20 to-pink-600/20",
-        tag: "Design",
-    },
-    {
-        title: "Building Real-time Apps: From WebSockets to Production",
-        excerpt:
-            "A deep dive into architecting real-time collaborative tools using Socket.io, WebRTC, and the lessons learned along the way.",
-        date: "Dec 2025",
-        readTime: "8 min read",
-        gradient: "from-blue-500/20 to-indigo-600/20",
-        tag: "Engineering",
-    },
-    {
-        title: "Photography & Design: Finding the Right Perspective",
-        excerpt:
-            "How my passion for photography informs my approach to composition, framing, and visual hierarchy in digital products.",
-        date: "Nov 2025",
-        readTime: "4 min read",
-        gradient: "from-amber-500/20 to-orange-600/20",
-        tag: "Creative",
-    },
-];
+import { useDataStore } from "@/app/lib/DataStore";
 
 export default function Blog() {
+    const { blog: articles } = useDataStore();
     const sectionRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -121,7 +93,7 @@ export default function Blog() {
                                         <span>{article.date}</span>
                                         <span className="flex items-center gap-1">
                                             <Clock size={10} />
-                                            {article.readTime}
+                                            {article.read_time}
                                         </span>
                                     </div>
                                     <ArrowUpRight size={14} className="text-text-tertiary transition-all group-hover:text-accent group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />

@@ -5,8 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { gsap } from "@/app/hooks/useGsap";
-import { projects, categories } from "@/app/data/projects";
+import { useDataStore } from "@/app/lib/DataStore";
 import type { Project } from "@/app/types";
+
+const categories = ["All", "UI/UX", "Web Dev", "Mobile Apps", "IoT/Hardware"];
 
 function ProjectCard({ project }: { project: Project }) {
     return (
@@ -21,10 +23,15 @@ function ProjectCard({ project }: { project: Project }) {
                 href={`/projects/${project.id}`}
                 className="glow-border group relative flex flex-col overflow-hidden rounded-2xl bg-bg-card transition-transform duration-300 hover:-translate-y-2 cursor-pointer block"
             >
-                {/* Gradient header */}
-                <div className={`relative flex h-40 items-center justify-center bg-gradient-to-br ${project.gradient}`}>
-                    <span className="text-5xl drop-shadow-lg transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6">{project.icon}</span>
-                    <span className={`absolute right-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${project.status === "Completed"
+                {/* Header */}
+                <div className={`relative flex h-40 items-center justify-center ${!project.banner_url ? `bg-gradient-to-br ${project.gradient}` : "bg-bg-secondary"}`}>
+                    {project.banner_url && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={project.banner_url} alt={`${project.title} Banner`} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    )}
+                    {project.banner_url && <div className="absolute inset-0 bg-black/20 transition-opacity duration-300 group-hover:bg-black/40" />}
+                    {!project.banner_url && <span className="text-5xl drop-shadow-lg transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6">{project.icon}</span>}
+                    <span className={`absolute right-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider z-10 ${project.status === "Completed"
                         ? "bg-emerald-500/20 text-emerald-100 backdrop-blur-sm"
                         : "bg-amber-500/20 text-amber-100 backdrop-blur-sm"
                         }`}>
@@ -58,6 +65,7 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 export default function Projects() {
+    const { projects } = useDataStore();
     const [activeCategory, setActiveCategory] = useState<string>("All");
     const sectionRef = useRef<HTMLDivElement>(null);
 

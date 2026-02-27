@@ -4,43 +4,10 @@ import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Play, Heart, MessageCircle, ExternalLink } from "lucide-react";
 import { gsap } from "@/app/hooks/useGsap";
-
-const videos = [
-    {
-        title: "Urban Night Cinematography",
-        views: "12.4K",
-        likes: "1.8K",
-        gradient: "from-violet-600 to-indigo-800",
-        tag: "Cinematic",
-        duration: "0:32",
-    },
-    {
-        title: "Product Reveal — Tech Gadget",
-        views: "8.7K",
-        likes: "956",
-        gradient: "from-rose-600 to-pink-800",
-        tag: "Product",
-        duration: "0:45",
-    },
-    {
-        title: "Anime Edit — Jujutsu Kaisen AMV",
-        views: "34.2K",
-        likes: "5.1K",
-        gradient: "from-cyan-600 to-blue-800",
-        tag: "Anime Edit",
-        duration: "1:12",
-    },
-    {
-        title: "Street Photography Montage",
-        views: "6.3K",
-        likes: "743",
-        gradient: "from-amber-600 to-orange-800",
-        tag: "Photography",
-        duration: "0:58",
-    },
-];
+import { useDataStore } from "@/app/lib/DataStore";
 
 export default function VideoShowcase() {
+    const { videos } = useDataStore();
     const sectionRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {

@@ -78,10 +78,17 @@ export default function ProjectDetailPage() {
         <div ref={sectionRef} className="min-h-screen bg-bg-primary">
             {/* Hero banner */}
             <div
-                className={`relative flex h-[40vh] min-h-[320px] items-end bg-gradient-to-br ${project.gradient}`}
+                className={`relative flex h-[40vh] min-h-[320px] items-end ${!project.banner_url ? `bg-gradient-to-br ${project.gradient}` : "bg-bg-secondary"}`}
             >
+                {project.banner_url && (
+                    <div className="absolute inset-0 z-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={project.banner_url} alt={`${project.title} Banner`} className="h-full w-full object-cover" />
+                        <div className="absolute inset-0 bg-black/50" />
+                    </div>
+                )}
                 {/* Subtle overlay */}
-                <div className="absolute inset-0 bg-black/20" />
+                {!project.banner_url && <div className="absolute inset-0 bg-black/20" />}
 
                 {/* Back button */}
                 <motion.button
@@ -95,10 +102,12 @@ export default function ProjectDetailPage() {
                 </motion.button>
 
                 {/* Icon & title */}
-                <div className="detail-header relative mx-auto w-full max-w-7xl px-6 pb-10">
-                    <span className="mb-4 block text-6xl drop-shadow-lg lg:text-7xl">
-                        {project.icon}
-                    </span>
+                <div className="detail-header relative mx-auto w-full max-w-7xl px-6 pb-10 z-10">
+                    {!project.banner_url && (
+                        <span className="mb-4 block text-6xl drop-shadow-lg lg:text-7xl">
+                            {project.icon}
+                        </span>
+                    )}
                     <h1 className="text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
                         {project.title}
                     </h1>

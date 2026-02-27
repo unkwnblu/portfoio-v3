@@ -3,35 +3,10 @@
 import { useEffect, useRef } from "react";
 import { Star, Quote } from "lucide-react";
 import { gsap } from "@/app/hooks/useGsap";
-
-const testimonials = [
-    {
-        name: "Adaeze O.",
-        role: "Founder, Bloom Studios",
-        content:
-            "Dwayne completely transformed our digital presence. His eye for design combined with solid engineering skills is rare — the final product exceeded every expectation.",
-        rating: 5,
-        gradient: "from-emerald-500/10 to-teal-500/10",
-    },
-    {
-        name: "Michael K.",
-        role: "CTO, InnovateTech",
-        content:
-            "Working with Dwayne was seamless. He understood the vision on day one and delivered a robust, scalable system ahead of schedule. Highly recommended.",
-        rating: 5,
-        gradient: "from-blue-500/10 to-indigo-500/10",
-    },
-    {
-        name: "Fatima B.",
-        role: "Product Manager, EduLeap",
-        content:
-            "The mobile app Dwayne built for us is beautiful and lightning-fast. Our users love it — engagement metrics jumped 40% in the first month.",
-        rating: 5,
-        gradient: "from-violet-500/10 to-purple-500/10",
-    },
-];
+import { useDataStore } from "@/app/lib/DataStore";
 
 export default function Testimonials() {
+    const { testimonials } = useDataStore();
     const sectionRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
