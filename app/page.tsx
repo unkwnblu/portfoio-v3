@@ -11,7 +11,6 @@ import InstagramFeed from "./components/InstagramFeed";
 import Blog from "./components/Blog";
 import Testimonials from "./components/Testimonials";
 import AvailableForHire from "./components/AvailableForHire";
-import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 
 export default function Home() {
@@ -31,7 +30,6 @@ export default function Home() {
         <Blog />
         <Testimonials />
         <AvailableForHire />
-        <Contact />
       </main>
       <Footer />
     </>

@@ -4,8 +4,10 @@ import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Zap } from "lucide-react";
 import { gsap } from "@/app/hooks/useGsap";
+import { useDataStore } from "@/app/lib/DataStore";
 
 export default function AvailableForHire() {
+    const { profile } = useDataStore();
     const sectionRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -130,10 +132,8 @@ export default function AvailableForHire() {
 
                         {/* CTAs */}
                         <div className="mt-10 flex flex-wrap justify-center gap-4">
-                            <motion.button
-                                onClick={() =>
-                                    document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })
-                                }
+                            <motion.a
+                                href={`mailto:${profile.email}`}
                                 className="group inline-flex items-center gap-2 rounded-xl bg-accent px-8 py-4 text-base font-bold text-text-inverse transition-all hover:bg-accent-hover hover:shadow-xl hover:shadow-accent-glow"
                                 whileHover={{ scale: 1.03 }}
                                 whileTap={{ scale: 0.97 }}
@@ -144,7 +144,7 @@ export default function AvailableForHire() {
                                     size={16}
                                     className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                                 />
-                            </motion.button>
+                            </motion.a>
                             <motion.a
                                 href="/resume.pdf"
                                 className="inline-flex items-center gap-2 rounded-xl border border-border bg-bg-card px-8 py-4 text-base font-bold text-text-primary transition-all hover:border-accent/30"

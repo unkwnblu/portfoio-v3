@@ -7,8 +7,12 @@ import { gsap } from "@/app/hooks/useGsap";
 import { useDataStore } from "@/app/lib/DataStore";
 
 export default function VideoShowcase() {
-    const { videos } = useDataStore();
+    const { videos, profile } = useDataStore();
     const sectionRef = useRef<HTMLDivElement>(null);
+
+    const tiktokLink = profile.social_links.find(l =>
+        l.name.toLowerCase().includes('tiktok') || l.url.includes('tiktok')
+    )?.url || "https://tiktok.com";
 
     useEffect(() => {
         if (!sectionRef.current) return;
@@ -144,10 +148,10 @@ export default function VideoShowcase() {
                     })}
                 </div>
 
-                {/* View more */}
+                {/* CTA */}
                 <div className="mt-8 flex justify-center">
                     <a
-                        href="https://tiktok.com"
+                        href={tiktokLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group inline-flex items-center gap-2 rounded-xl border border-border bg-bg-card px-6 py-3 text-sm font-semibold text-text-primary transition-all hover:border-accent/30 hover:bg-bg-card-hover"

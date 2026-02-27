@@ -4,15 +4,16 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sun, Moon, Menu, X } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
+import { useDataStore } from "@/app/lib/DataStore";
 
 const navLinks = [
     { label: "Services", href: "#services" },
     { label: "About", href: "#about" },
     { label: "Projects", href: "#projects" },
-    { label: "Contact", href: "#contact" },
 ];
 
 export default function Navbar() {
+    const { profile } = useDataStore();
     const { theme, toggleTheme } = useTheme();
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -63,6 +64,12 @@ export default function Navbar() {
                             {link.label}
                         </button>
                     ))}
+                    <a
+                        href={`mailto:${profile.email}`}
+                        className="relative rounded-lg px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
+                    >
+                        Contact
+                    </a>
 
                     {/* Theme Toggle */}
                     <motion.button
@@ -138,6 +145,13 @@ export default function Navbar() {
                                     {link.label}
                                 </button>
                             ))}
+                            <a
+                                href={`mailto:${profile.email}`}
+                                onClick={() => setMobileOpen(false)}
+                                className="rounded-lg px-4 py-3 text-left text-sm font-medium text-text-secondary transition-colors hover:bg-bg-card hover:text-text-primary block"
+                            >
+                                Contact
+                            </a>
                         </div>
                     </motion.div>
                 )}

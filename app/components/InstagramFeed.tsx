@@ -7,8 +7,12 @@ import { gsap } from "@/app/hooks/useGsap";
 import { useDataStore } from "@/app/lib/DataStore";
 
 export default function InstagramFeed() {
-    const { instagram: igPosts } = useDataStore();
+    const { instagram: igPosts, profile } = useDataStore();
     const sectionRef = useRef<HTMLDivElement>(null);
+
+    const igLink = profile.social_links.find(l =>
+        l.name.toLowerCase().includes('instagram') || l.url.includes('instagram')
+    )?.url || "https://instagram.com";
 
     useEffect(() => {
         if (!sectionRef.current) return;
@@ -82,10 +86,9 @@ export default function InstagramFeed() {
                     ))}
                 </div>
 
-                {/* Follow CTA */}
                 <div className="mt-10 flex justify-center">
                     <a
-                        href="https://instagram.com"
+                        href={igLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group inline-flex items-center gap-2 rounded-xl border border-border bg-bg-card px-6 py-3 text-sm font-semibold text-text-primary transition-all hover:border-accent/30 hover:bg-bg-card-hover"

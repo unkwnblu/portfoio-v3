@@ -14,7 +14,6 @@ const socialIcons: Record<string, React.ElementType> = {
 const footerNavLinks = [
     { label: "About", href: "#about" },
     { label: "Projects", href: "#projects" },
-    { label: "Contact", href: "#contact" },
 ];
 
 export default function Footer() {
@@ -51,7 +50,9 @@ export default function Footer() {
             <div className="footer-content mx-auto flex max-w-7xl flex-col items-center gap-6 px-6 sm:flex-row sm:justify-between">
                 <div className="flex items-center gap-6">
                     <span className="text-sm font-bold text-text-primary">
-                        <span className="gradient-text">D</span>wayne<span className="gradient-text">.</span>
+                        <span className="gradient-text">Dwayne</span>
+                        <span>Agbale</span>
+                        <span className="gradient-text">.</span>
                     </span>
                     <div className="hidden h-4 w-px bg-border sm:block" />
                     <div className="hidden gap-4 sm:flex">
@@ -64,6 +65,12 @@ export default function Footer() {
                                 {link.label}
                             </button>
                         ))}
+                        <a
+                            href={`mailto:${profile.email}`}
+                            className="text-xs text-text-tertiary transition-colors hover:text-text-primary"
+                        >
+                            Contact
+                        </a>
                     </div>
                 </div>
                 <p className="flex items-center gap-1 text-xs text-text-tertiary">
@@ -72,7 +79,7 @@ export default function Footer() {
                 </p>
                 <div className="flex gap-2">
                     {profile.social_links.slice(0, 3).map((link) => {
-                        const Icon = socialIcons[link.icon] || Github;
+                        const Icon = socialIcons[link.icon?.toLowerCase()] || Github;
                         return (
                             <a
                                 key={link.name}
