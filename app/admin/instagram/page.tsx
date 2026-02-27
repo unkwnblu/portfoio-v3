@@ -3,96 +3,116 @@
 import { useState } from "react";
 import { useDataStore } from "@/app/lib/DataStore";
 import type { InstagramPost } from "@/app/types";
-import { Plus, Pencil, Trash2, Check, Heart } from "lucide-react";
-
-const gradientOptions = [
-    "from-amber-400 to-orange-600", "from-blue-400 to-indigo-600",
-    "from-pink-400 to-rose-600", "from-emerald-400 to-teal-600",
-    "from-violet-400 to-purple-600", "from-cyan-400 to-blue-600",
-    "from-red-400 to-rose-600", "from-yellow-400 to-amber-600",
-];
-
-const emptyPost: Omit<InstagramPost, "id"> = { gradient: gradientOptions[0], likes: "0", caption: "" };
+import { Plus, Trash2, Image as ImageIcon, Loader2 } from "lucide-react";
 
 export default function InstagramAdmin() {
-    const { instagram, addInstagramPost, updateInstagramPost, deleteInstagramPost } = useDataStore();
-    const [editing, setEditing] = useState<string | null>(null);
-    const [creating, setCreating] = useState(false);
-    const [form, setForm] = useState(emptyPost);
+    const { instagram, addInstagramPost, deleteInstagramPost, uploadFile, deleteFile } = useDataStore();
+    const [uploading, setUploading] = useState(false);
 
-    const startCreate = () => { setCreating(true); setEditing(null); setForm(emptyPost); };
-    const startEdit = (p: InstagramPost) => { setEditing(p.id); setCreating(false); setForm(p); };
-    const handleCancel = () => { setCreating(false); setEditing(null); setForm(emptyPost); };
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        if (!files.length) return;
 
-    const handleSave = async () => {
-        if (!form.caption.trim()) return;
-        if (creating) await addInstagramPost(form);
-        else if (editing) await updateInstagramPost(editing, form);
-        handleCancel();
+        const remainingSlots = 8 - instagram.length;
+        if (remainingSlots <= 0) {
+            alert("Maximum limit of 8 images reached.");
+            return;
+        }
+
+        const filesToUpload = files.slice(0, remainingSlots);
+        setUploading(true);
+
+        try {
+            for (const file of filesToUpload) {
+                const path = `instagram/${Date.now()}-${file.name}`;
+                const url = await uploadFile("project-images", path, file);
+                if (url) {
+                    await addInstagramPost({
+                        gradient: "from-gray-500 to-gray-600",
+                        likes: "0",
+                        caption: "",
+                        image_url: url
+                    });
+                }
+            }
+        } catch (error) {
+            console.error("Failed to upload instagram images", error);
+        } finally {
+            setUploading(false);
+            // reset input
+            e.target.value = "";
+        }
+    };
+
+    const handleDelete = async (post: InstagramPost) => {
+        // Delete from public storage first
+        if (post.image_url) {
+            try {
+                const urlPath = new URL(post.image_url).pathname;
+                const segments = urlPath.split("/");
+                const pathIndex = segments.indexOf("project-images");
+                if (pathIndex !== -1 && pathIndex + 1 < segments.length) {
+                    const storagePath = segments.slice(pathIndex + 1).join("/");
+                    await deleteFile("project-images", storagePath);
+                }
+            } catch (err) {
+                console.error("Failed to parse or delete storage image", err);
+            }
+        }
+
+        // Delete row
+        await deleteInstagramPost(post.id);
     };
 
     return (
         <div>
             <div className="mb-8 flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-text-primary">Instagram Posts</h1>
-                    <p className="mt-1 text-sm text-text-secondary">{instagram.length} posts total</p>
+                    <h1 className="text-2xl font-bold text-text-primary">Instagram Images</h1>
+                    <p className="mt-1 text-sm text-text-secondary">{instagram.length} / 8 images</p>
                 </div>
-                {!creating && !editing && (
-                    <button onClick={startCreate} className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-text-inverse hover:bg-accent-hover">
-                        <Plus size={16} /> Add Post
+                <div className="relative">
+                    <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleFileChange}
+                        disabled={uploading || instagram.length >= 8}
+                        className="absolute inset-0 z-10 w-full h-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+                    />
+                    <button
+                        disabled={uploading || instagram.length >= 8}
+                        className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-text-inverse hover:bg-accent-hover disabled:opacity-50"
+                    >
+                        {uploading ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
+                        {uploading ? "Uploading..." : "Upload Images"}
                     </button>
-                )}
-            </div>
-
-            {(creating || editing) && (
-                <div className="mb-8 rounded-2xl border border-border bg-bg-card p-6">
-                    <h2 className="mb-5 text-lg font-semibold text-text-primary">{creating ? "New Post" : "Edit Post"}</h2>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <div className="sm:col-span-2">
-                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Caption</label>
-                            <input value={form.caption} onChange={(e) => setForm({ ...form, caption: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="Photo caption..." />
-                        </div>
-                        <div>
-                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Likes</label>
-                            <input value={form.likes} onChange={(e) => setForm({ ...form, likes: e.target.value })} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent" placeholder="2.4K" />
-                        </div>
-                        <div>
-                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Color Theme</label>
-                            <div className="flex flex-wrap gap-2">
-                                {gradientOptions.map((g) => (
-                                    <button key={g} onClick={() => setForm({ ...form, gradient: g })} className={`h-8 w-8 rounded-lg bg-gradient-to-br ${g} transition-all ${form.gradient === g ? "ring-2 ring-accent ring-offset-2 ring-offset-bg-card" : "opacity-50 hover:opacity-100"}`} />
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="mt-5 flex gap-3">
-                        <button onClick={handleSave} className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-text-inverse hover:bg-accent-hover"><Check size={14} /> Save</button>
-                        <button onClick={handleCancel} className="rounded-xl border border-border px-5 py-2.5 text-sm font-medium text-text-secondary hover:bg-bg-secondary">Cancel</button>
-                    </div>
                 </div>
-            )}
+            </div>
 
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {instagram.map((post) => (
-                    <div key={post.id} className="group relative aspect-square overflow-hidden rounded-2xl">
-                        <div className={`absolute inset-0 bg-gradient-to-br ${post.gradient}`} />
-                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/0 group-hover:bg-black/50 transition-colors">
-                            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center gap-2">
-                                <div className="flex items-center gap-1 text-white text-xs"><Heart size={12} fill="white" /> {post.likes}</div>
-                                <p className="text-white/80 text-[10px] px-3 text-center">{post.caption}</p>
-                                <div className="flex gap-1 mt-2">
-                                    <button onClick={() => startEdit(post)} className="flex h-7 w-7 items-center justify-center rounded bg-white/20 text-white hover:bg-white/30"><Pencil size={12} /></button>
-                                    <button onClick={() => deleteInstagramPost(post.id)} className="flex h-7 w-7 items-center justify-center rounded bg-white/20 text-white hover:bg-red-500/50"><Trash2 size={12} /></button>
-                                </div>
-                            </div>
+                    <div key={post.id} className="group relative aspect-square overflow-hidden rounded-2xl bg-bg-secondary">
+                        {post.image_url ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={post.image_url} alt="Instagram post" className="h-full w-full object-cover" />
+                        ) : (
+                            <div className={`absolute inset-0 bg-gradient-to-br ${post.gradient}`} />
+                        )}
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/40 transition-colors">
+                            <button onClick={() => handleDelete(post)} className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500 text-white opacity-0 group-hover:opacity-100 hover:bg-red-600 transition-all scale-75 group-hover:scale-100">
+                                <Trash2 size={16} />
+                            </button>
                         </div>
                     </div>
                 ))}
             </div>
+
             {instagram.length === 0 && (
-                <div className="rounded-2xl border border-dashed border-border bg-bg-card p-12 text-center">
-                    <p className="text-sm text-text-tertiary">No posts yet.</p>
+                <div className="rounded-2xl border border-dashed border-border bg-bg-card p-12 text-center flex flex-col items-center justify-center">
+                    <ImageIcon size={32} className="mb-4 text-text-tertiary opacity-50" />
+                    <p className="text-sm font-medium text-text-primary">No images uploaded</p>
+                    <p className="mt-1 text-xs text-text-tertiary">Upload up to 8 images to show on your feed.</p>
                 </div>
             )}
         </div>

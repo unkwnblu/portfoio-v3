@@ -61,30 +61,23 @@ export default function InstagramFeed() {
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                     {igPosts.map((post, i) => (
                         <div
-                            key={i}
-                            className="ig-card group relative aspect-square cursor-pointer overflow-hidden rounded-2xl"
+                            key={post.id || i}
+                            className="ig-card group relative aspect-square cursor-pointer overflow-hidden rounded-2xl bg-bg-secondary"
                         >
-                            {/* Placeholder image (gradient) */}
-                            <div
-                                className={`absolute inset-0 bg-gradient-to-br ${post.gradient} transition-transform duration-500 group-hover:scale-110`}
-                            />
+                            {/* Render image if exists, else fallback gradient */}
+                            {post.image_url ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                    src={post.image_url}
+                                    alt={`Instagram post ${i + 1}`}
+                                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                />
+                            ) : (
+                                <div className={`absolute inset-0 bg-gradient-to-br ${post.gradient} transition-transform duration-500 group-hover:scale-105`} />
+                            )}
 
-                            {/* Camera overlay pattern */}
-                            <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/40" />
-
-                            {/* Hover overlay */}
-                            <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                <div className="flex items-center gap-2 text-white">
-                                    <Heart size={18} fill="white" />
-                                    <span className="text-sm font-bold">{post.likes}</span>
-                                </div>
-                                <p className="mt-2 px-4 text-center text-xs text-white/80">
-                                    {post.caption}
-                                </p>
-                            </div>
-
-                            {/* Corner gradient */}
-                            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            {/* Hover dark overlay */}
+                            <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20" />
                         </div>
                     ))}
                 </div>
