@@ -32,28 +32,15 @@ export default function Hero() {
         if (!sectionRef.current) return;
 
         const ctx = gsap.context(() => {
-            // Large rotating ring entrance
-            gsap.from(".hero-ring", {
-                scale: 0,
-                rotation: -180,
-                opacity: 0,
-                duration: 1.8,
-                ease: "power4.out",
-                delay: 0.3,
-            });
-
-            gsap.to(".hero-ring", {
-                rotation: 360,
-                duration: 40,
-                repeat: -1,
-                ease: "none",
-            });
-
-            gsap.to(".hero-ring-inner", {
-                rotation: -360,
-                duration: 30,
-                repeat: -1,
-                ease: "none",
+            // Parallax image wrapper on scroll
+            gsap.to(".hero-image-wrapper", {
+                y: -40,
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: 1,
+                },
             });
 
             // Headline character split animation
@@ -142,51 +129,15 @@ export default function Hero() {
                 />
             </div>
 
-            {/* Large rotating ring - huge animated element */}
-            <div className="pointer-events-none absolute right-[-10%] top-1/2 -translate-y-1/2 lg:right-[5%]">
-                <div
-                    ref={ringRef}
-                    className="hero-ring relative h-[500px] w-[500px] lg:h-[600px] lg:w-[600px]"
-                >
-                    <div className="absolute inset-0 rounded-full border border-accent/15" />
-                    <div className="absolute inset-8 rounded-full border border-accent/10 border-dashed" />
-                    <div className="hero-ring-inner absolute inset-16 rounded-full border border-accent/20">
-                        {/* Dots on ring */}
-                        {[0, 60, 120, 180, 240, 300].map((deg) => (
-                            <div
-                                key={deg}
-                                className="absolute h-2.5 w-2.5 rounded-full bg-accent/40"
-                                style={{
-                                    top: "50%",
-                                    left: "50%",
-                                    transform: `rotate(${deg}deg) translateX(calc(50% + 80px)) translate(-50%, -50%)`,
-                                }}
-                            />
-                        ))}
-                    </div>
-                    {/* Background glow behind image */}
-                    <div className="absolute inset-24 rounded-full bg-accent/10 blur-[40px]" />
+            {/* Content Container */}
+            <div className="hero-content relative mx-auto w-full max-w-7xl px-6 pt-32 pb-16 lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
 
-                    {/* Profile Image embedded inside the rings */}
-                    <div className="absolute inset-24 overflow-hidden rounded-full border-2 border-accent/20 bg-bg-card p-2 shadow-2xl">
-                        <div className="relative h-full w-full overflow-hidden rounded-full bg-bg-secondary">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src="/profile.png"
-                                alt="Profile"
-                                className="h-full w-full object-cover object-top"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="hero-content relative mx-auto w-full max-w-7xl px-6 pt-24 pb-16">
+                {/* Text Content Block */}
                 <motion.div
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
-                    className="max-w-3xl"
+                    className="max-w-2xl lg:max-w-none"
                 >
                     {/* Status badge */}
                     <motion.div variants={itemVariants}>
@@ -259,6 +210,29 @@ export default function Hero() {
                             Get in Touch
                         </button>
                     </motion.div>
+                </motion.div>
+
+                {/* Profile Image Block (Desktop Right Column) */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
+                    className="hero-image-wrapper relative hidden lg:block mt-12 lg:mt-0"
+                >
+                    <div className="relative mx-auto max-w-md aspect-[4/5] overflow-hidden rounded-3xl border border-accent/20 bg-bg-card p-2 shadow-2xl">
+                        <div className="relative h-full w-full overflow-hidden rounded-2xl bg-bg-secondary">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src="/profile.png"
+                                alt="Profile Portrait"
+                                className="h-full w-full object-cover object-center transition-transform hover:scale-105 duration-700"
+                            />
+                        </div>
+
+                        {/* Decorative floating element */}
+                        <div className="absolute -bottom-6 -right-6 h-32 w-32 rounded-full bg-accent/10 blur-[30px]" />
+                        <div className="absolute -left-6 -top-6 h-32 w-32 rounded-full bg-accent/10 blur-[30px]" />
+                    </div>
                 </motion.div>
             </div>
 
