@@ -76,19 +76,20 @@ export default function VideoShowcase() {
                 </motion.div>
 
                 {/* Video grid */}
-                <div className="grid gap-5 sm:grid-cols-2">
+                <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 lg:grid-rows-3 lg:h-[600px] grid-flow-row-dense">
                     {videos.map((video) => {
                         const isPortrait = video.orientation === "portrait";
                         return (
                             <div
                                 key={video.title}
-                                className={`video-card glow-border group relative flex flex-col overflow-hidden rounded-2xl bg-bg-card ${isPortrait ? "sm:row-span-2 aspect-[9/16]" : "aspect-video"
+                                className={`video-card glow-border group relative flex flex-col overflow-hidden rounded-2xl bg-bg-card ${isPortrait
+                                    ? "md:col-span-1 lg:col-span-2 lg:row-span-3 min-h-[400px] lg:min-h-0"
+                                    : "md:col-span-1 lg:col-span-2 lg:row-span-1 min-h-[250px] lg:min-h-0"
                                     }`}
                             >
                                 {/* Video thumbnail */}
                                 <div
-                                    className={`relative flex items-center justify-center overflow-hidden flex-1 ${!video.video_url ? `bg-gradient-to-br ${video.gradient}` : "bg-black"} ${isPortrait ? "h-full w-full" : "h-full w-full shrink-0"
-                                        }`}
+                                    className={`relative flex items-center justify-center overflow-hidden flex-1 ${!video.video_url ? `bg-gradient-to-br ${video.gradient}` : "bg-black"} h-full w-full`}
                                 >
                                     {video.video_url && (
                                         <video src={video.video_url} className="absolute inset-0 h-full w-full object-cover opacity-80 transition-opacity duration-300 group-hover:opacity-100" muted autoPlay loop playsInline />
