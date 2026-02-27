@@ -93,6 +93,23 @@ function mapProfileFromLegacy(p: Record<string, unknown>): Profile {
     };
 }
 
+function mapBlogArticleFromLegacy(a: Record<string, unknown>): BlogArticle {
+    return {
+        id: (a.id as string) || "",
+        title: (a.title as string) || "",
+        excerpt: (a.excerpt as string) || "",
+        content: (a.content as string) || "",
+        date: (a.date as string) || "",
+        read_time: (a.read_time as string) || (a.readTime as string) || "",
+        gradient: (a.gradient as string) || "from-rose-500/20 to-pink-600/20",
+        tag: (a.tag as string) || "",
+        is_archived: (a.is_archived as boolean) || (a.isArchived as boolean) || false,
+        sort_order: (a.sort_order as number) || 0,
+        created_at: (a.created_at as string) || undefined,
+        updated_at: (a.updated_at as string) || undefined,
+    };
+}
+
 export function DataProvider({ children }: { children: ReactNode }) {
     const [projects, setProjects] = useState<Project[]>([]);
     const [videos, setVideos] = useState<VideoItem[]>([]);
@@ -126,7 +143,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
             if (projData) setProjects(projData.map((p) => mapProjectFromLegacy(p as unknown as Record<string, unknown>)));
             if (vidData) setVideos(vidData as VideoItem[]);
             if (igData) setInstagram(igData as InstagramPost[]);
-            if (blogData) setBlog(blogData as BlogArticle[]);
+            if (blogData) setBlog(blogData.map((a) => mapBlogArticleFromLegacy(a as unknown as Record<string, unknown>)));
             if (testiData) setTestimonials(testiData as Testimonial[]);
             if (profileData) setProfile(mapProfileFromLegacy(profileData as unknown as Record<string, unknown>));
         } catch (err) {
