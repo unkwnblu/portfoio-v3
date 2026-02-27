@@ -12,7 +12,7 @@ const gradientOptions = [
 ];
 
 const emptyArticle: Omit<BlogArticle, "id"> = {
-    title: "", excerpt: "", date: "", read_time: "", gradient: gradientOptions[0], tag: "", is_archived: false,
+    title: "", excerpt: "", content: "", date: "", read_time: "", gradient: gradientOptions[0], tag: "", is_archived: false,
 };
 
 export default function BlogAdmin() {
@@ -61,6 +61,10 @@ export default function BlogAdmin() {
                         <div className="sm:col-span-2">
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">Excerpt</label>
                             <textarea value={form.excerpt} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} rows={3} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent resize-none" placeholder="Brief excerpt..." />
+                        </div>
+                        <div className="sm:col-span-2">
+                            <label className="mb-1.5 block text-xs font-medium text-text-secondary">Full Content</label>
+                            <textarea value={form.content || ""} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={10} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent resize-none font-mono" placeholder="Write full article content here. New lines will be preserved." />
                         </div>
                         <div>
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">Tag</label>

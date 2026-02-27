@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Clock, ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import { gsap } from "@/app/hooks/useGsap";
 import { useDataStore } from "@/app/lib/DataStore";
 
@@ -74,32 +75,33 @@ export default function Blog() {
                 {/* Articles grid */}
                 <div className="blog-grid grid gap-5 sm:grid-cols-2 lg:grid-cols-3" style={{ perspective: "1200px" }}>
                     {articles.map((article) => (
-                        <article
-                            key={article.title}
-                            className="blog-card glow-border group flex cursor-pointer flex-col overflow-hidden rounded-2xl bg-bg-card transition-transform duration-300 hover:-translate-y-2"
-                        >
-                            <div className={`relative flex h-36 items-end bg-gradient-to-br ${article.gradient} p-5`}>
-                                <span className="blog-tag rounded-full border border-white/10 bg-white/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-md">
-                                    {article.tag}
-                                </span>
-                            </div>
-                            <div className="flex flex-1 flex-col p-5">
-                                <h3 className="mb-2 text-base font-bold leading-snug text-text-primary group-hover:text-accent transition-colors">
-                                    {article.title}
-                                </h3>
-                                <p className="mb-4 flex-1 text-sm leading-relaxed text-text-secondary line-clamp-2">{article.excerpt}</p>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3 text-xs text-text-tertiary">
-                                        <span>{article.date}</span>
-                                        <span className="flex items-center gap-1">
-                                            <Clock size={10} />
-                                            {article.read_time}
-                                        </span>
-                                    </div>
-                                    <ArrowUpRight size={14} className="text-text-tertiary transition-all group-hover:text-accent group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                        <Link href={`/blog/${article.id}`} key={article.id || article.title} className="group block">
+                            <article
+                                className="blog-card glow-border flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl bg-bg-card transition-transform duration-300 hover:-translate-y-2"
+                            >
+                                <div className={`relative flex h-36 items-end bg-gradient-to-br ${article.gradient} p-5`}>
+                                    <span className="blog-tag rounded-full border border-white/10 bg-white/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-md">
+                                        {article.tag}
+                                    </span>
                                 </div>
-                            </div>
-                        </article>
+                                <div className="flex flex-1 flex-col p-5">
+                                    <h3 className="mb-2 text-base font-bold leading-snug text-text-primary group-hover:text-accent transition-colors">
+                                        {article.title}
+                                    </h3>
+                                    <p className="mb-4 flex-1 text-sm leading-relaxed text-text-secondary line-clamp-2">{article.excerpt}</p>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3 text-xs text-text-tertiary">
+                                            <span>{article.date}</span>
+                                            <span className="flex items-center gap-1">
+                                                <Clock size={10} />
+                                                {article.read_time}
+                                            </span>
+                                        </div>
+                                        <ArrowUpRight size={14} className="text-text-tertiary transition-all group-hover:text-accent group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                                    </div>
+                                </div>
+                            </article>
+                        </Link>
                     ))}
                 </div>
             </div>
