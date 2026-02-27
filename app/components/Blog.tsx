@@ -87,7 +87,7 @@ export default function Blog() {
                                 <h3 className="mb-2 text-base font-bold leading-snug text-text-primary group-hover:text-accent transition-colors">
                                     {article.title}
                                 </h3>
-                                <p className="mb-4 flex-1 text-sm leading-relaxed text-text-secondary">{article.excerpt}</p>
+                                <p className="mb-4 flex-1 text-sm leading-relaxed text-text-secondary line-clamp-2">{article.excerpt}</p>
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3 text-xs text-text-tertiary">
                                         <span>{article.date}</span>
