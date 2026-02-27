@@ -36,9 +36,9 @@ export default function About() {
     const sectionRef = useRef<HTMLDivElement>(null);
 
     const stats = [
-        { value: `${projects.length}+`, label: "Projects built" },
-        { value: `${Math.max(1, new Date().getFullYear() - 2021)}+`, label: "Years experience" },
-        { value: `${testimonials.length}+`, label: "Happy clients" },
+        { value: projects.length, label: "Projects built" },
+        { value: Math.max(1, new Date().getFullYear() - 2021), label: "Years experience" },
+        { value: testimonials.length, label: "Happy clients" },
     ];
 
     const formattedInterests = profile.interests.map((interest, i) => ({
@@ -101,17 +101,23 @@ export default function About() {
                 stagger: 0.1,
                 ease: "back.out(1.7)",
                 scrollTrigger: {
-                    trigger: ".about-interests-row",
-                    start: "top 85%",
+                    // .about-interests-row uses display: contents, which breaks scrolltrigger measurements.
+                    // using .about-stats instead aligns it correctly with the user scroll position.
+                    trigger: ".about-stats",
+                    start: "top 80%",
                     toggleActions: "play none none reverse",
                 },
             });
 
             // Stat counters count up
-            const statEls = sectionRef.current?.querySelectorAll(".stat-value");
+            const statEls = sectionRef.current?.querySelectorAll(".stat-value") as NodeListOf<HTMLElement>;
             statEls?.forEach((el) => {
-                const target = parseInt(el.textContent || "0");
+                const target = parseInt(el.dataset.target || "0", 10);
                 const obj = { val: 0 };
+
+                // reset visually to 0 before animating if re-triggered
+                el.textContent = "0+";
+
                 gsap.to(obj, {
                     val: target,
                     duration: 2,
@@ -194,8 +200,11 @@ export default function About() {
                         <div className="mt-6 flex flex-col gap-4">
                             {stats.map((stat) => (
                                 <div key={stat.label}>
-                                    <span className="stat-value text-2xl font-bold text-text-primary">
-                                        {stat.value}
+                                    <span
+                                        className="stat-value text-2xl font-bold text-text-primary"
+                                        data-target={stat.value}
+                                    >
+                                        0+
                                     </span>
                                     <p className="text-sm text-text-tertiary">{stat.label}</p>
                                 </div>
