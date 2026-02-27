@@ -92,12 +92,14 @@ export default function VideoShowcase() {
                                     className={`relative flex items-center justify-center overflow-hidden flex-1 ${!video.video_url ? `bg-gradient-to-br ${video.gradient}` : "bg-black"} h-full w-full`}
                                 >
                                     {video.video_url && (
-                                        <video src={video.video_url} className="absolute inset-0 h-full w-full object-cover opacity-80 transition-opacity duration-300 group-hover:opacity-100" muted autoPlay loop playsInline />
+                                        <video src={video.video_url} className="absolute inset-0 h-full w-full object-cover" muted autoPlay loop playsInline />
                                     )}
-                                    {/* Play button */}
-                                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 backdrop-blur-md text-white transition-transform group-hover:scale-110 z-10">
-                                        <Play size={20} fill="white" />
-                                    </div>
+                                    {/* Play button - Only show if no video plays natively */}
+                                    {!video.video_url && (
+                                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 backdrop-blur-md text-white transition-transform group-hover:scale-110 z-10">
+                                            <Play size={20} fill="white" />
+                                        </div>
+                                    )}
 
                                     {/* Duration badge */}
                                     <span className="absolute bottom-3 right-3 rounded-md bg-black/50 px-2 py-0.5 text-[11px] font-mono font-bold text-white backdrop-blur-sm z-20">
@@ -109,9 +111,11 @@ export default function VideoShowcase() {
                                         {video.tag}
                                     </span>
 
-                                    {/* Gradient overlay for text if portrait */}
-                                    {isPortrait && (
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90 z-10 pointer-events-none" />
+                                    {/* Gradient overlay for text if portrait or fallback shadow for video readability */}
+                                    {isPortrait ? (
+                                        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-100 z-10 pointer-events-none" />
+                                    ) : video.video_url && (
+                                        <div className="absolute inset-0 bg-black/10 transition-opacity duration-300 group-hover:bg-black/20 z-10 pointer-events-none" />
                                     )}
                                 </div>
 
