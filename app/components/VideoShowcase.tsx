@@ -82,12 +82,12 @@ export default function VideoShowcase() {
                         return (
                             <div
                                 key={video.title}
-                                className={`video-card glow-border group relative flex flex-col overflow-hidden rounded-2xl bg-bg-card ${isPortrait ? "sm:row-span-2" : ""
+                                className={`video-card glow-border group relative flex flex-col overflow-hidden rounded-2xl bg-bg-card ${isPortrait ? "sm:row-span-2 aspect-[9/16]" : "aspect-video"
                                     }`}
                             >
                                 {/* Video thumbnail */}
                                 <div
-                                    className={`relative flex items-center justify-center overflow-hidden flex-1 ${!video.video_url ? `bg-gradient-to-br ${video.gradient}` : "bg-black"} ${isPortrait ? "min-h-[400px] h-full" : "h-48 shrink-0"
+                                    className={`relative flex items-center justify-center overflow-hidden flex-1 ${!video.video_url ? `bg-gradient-to-br ${video.gradient}` : "bg-black"} ${isPortrait ? "h-full w-full" : "h-full w-full shrink-0"
                                         }`}
                                 >
                                     {video.video_url && (
