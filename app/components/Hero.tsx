@@ -214,24 +214,26 @@ export default function Hero() {
 
                 {/* Profile Image Block (Desktop Right Column) */}
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
                     className="hero-image-wrapper relative hidden lg:block mt-12 lg:mt-0"
                 >
-                    <div className="relative mx-auto max-w-md aspect-[4/5] overflow-hidden rounded-3xl border border-accent/20 bg-bg-card p-2 shadow-2xl">
-                        <div className="relative h-full w-full overflow-hidden rounded-2xl bg-bg-secondary">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src="/profile.png"
-                                alt="Profile Portrait"
-                                className="h-full w-full object-cover object-center transition-transform hover:scale-105 duration-700"
-                            />
-                        </div>
+                    <div className="relative ml-auto w-full max-w-[550px] aspect-[4/5] xl:aspect-[3/4] overflow-hidden rounded-[2.5rem] bg-bg-card shadow-[0_30px_80px_-15px_rgba(0,0,0,0.3)] border border-accent/20 group">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src="/profile.png"
+                            alt="Profile Portrait"
+                            className="h-full w-full object-cover object-center transition-transform hover:scale-105 duration-1000"
+                        />
 
-                        {/* Decorative floating element */}
-                        <div className="absolute -bottom-6 -right-6 h-32 w-32 rounded-full bg-accent/10 blur-[30px]" />
-                        <div className="absolute -left-6 -top-6 h-32 w-32 rounded-full bg-accent/10 blur-[30px]" />
+                        {/* Decorative gradient overlays for blending/pop */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-bg-primary via-transparent to-transparent opacity-40 pointer-events-none" />
+                        <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[2.5rem] pointer-events-none" />
+
+                        {/* Floating glow effects */}
+                        <div className="absolute -bottom-16 -right-16 h-64 w-64 rounded-full bg-accent/30 blur-[60px] pointer-events-none opacity-50 transition-opacity duration-700 group-hover:opacity-80" />
+                        <div className="absolute -left-16 -top-16 h-64 w-64 rounded-full bg-accent/20 blur-[60px] pointer-events-none opacity-30" />
                     </div>
                 </motion.div>
             </div>
