@@ -6,10 +6,11 @@ import type { BlogArticle } from "@/app/types";
 import { Plus, Pencil, Trash2, Check, Clock, Archive } from "lucide-react";
 import ConfirmModal from "@/app/admin/components/ConfirmModal";
 import dynamic from "next/dynamic";
+import "react-quill-new/dist/quill.snow.css";
 
-// Dynamically import our React 19 bypass wrapper, NOT react-quill directly
+// Dynamically import react-quill-new which is compatible with React 19's removed findDOMNode
 const ReactQuill = dynamic(
-    () => import("@/app/admin/components/ReactQuillWrapper"),
+    () => import("react-quill-new"),
     { ssr: false }
 );
 
