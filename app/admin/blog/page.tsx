@@ -6,35 +6,11 @@ import type { BlogArticle } from "@/app/types";
 import { Plus, Pencil, Trash2, Check, Clock, Archive } from "lucide-react";
 import ConfirmModal from "@/app/admin/components/ConfirmModal";
 import dynamic from "next/dynamic";
-import "react-quill-new/dist/quill.snow.css";
 
-// Dynamically import react-quill-new which is compatible with React 19's removed findDOMNode
-const ReactQuill = dynamic(
-    () => import("react-quill-new"),
+const Editor = dynamic(
+    () => import("@/app/admin/components/CKEditorWrapper"),
     { ssr: false }
 );
-
-const quillModules = {
-    toolbar: [
-        [{ header: [2, 3, 4, false] }],
-        ["bold", "italic", "underline", "strike", "blockquote"],
-        [{ list: "ordered" }, { list: "bullet" }],
-        ["link", "image"],
-        ["clean"],
-    ],
-};
-
-const quillFormats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "link",
-    "image",
-];
 
 const gradientOptions = [
     "from-rose-500/20 to-pink-600/20", "from-blue-500/20 to-indigo-600/20",
@@ -108,15 +84,10 @@ export default function BlogAdmin() {
                         </div>
                         <div className="sm:col-span-2">
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">Full Content</label>
-                            <div className="bg-bg-secondary rounded-xl border border-border overflow-hidden">
-                                <ReactQuill
-                                    theme="snow"
+                            <div className="bg-bg-secondary rounded-xl border border-border overflow-hidden custom-ckeditor">
+                                <Editor
                                     value={form.content || ""}
                                     onChange={(content) => setForm({ ...form, content })}
-                                    modules={quillModules}
-                                    formats={quillFormats}
-                                    className="text-text-primary custom-quill"
-                                    placeholder="Write full article content here..."
                                 />
                             </div>
                         </div>

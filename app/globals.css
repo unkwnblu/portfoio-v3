@@ -218,60 +218,38 @@ body {
   animation: marquee-reverse 25s linear infinite;
 }
 
-/* ── React Quill Custom Dark Mode Styles ── */
-.custom-quill .ql-toolbar {
+/* ── CKEditor Custom Dark Mode Styles ── */
+.custom-ckeditor .ck.ck-editor__main>.ck-editor__editable {
+  background-color: var(--bg-card);
+  border-color: var(--border) !important;
+  color: var(--text-primary);
+  min-height: 250px;
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+}
+
+.custom-ckeditor .ck.ck-toolbar {
   background-color: var(--bg-card);
   border-color: var(--border) !important;
   border-top-left-radius: 0.75rem;
   border-top-right-radius: 0.75rem;
 }
 
-.custom-quill .ql-container {
-  border-color: var(--border) !important;
-  border-bottom-left-radius: 0.75rem;
-  border-bottom-right-radius: 0.75rem;
-  font-family: inherit;
-  font-size: 0.875rem;
-  min-height: 250px;
-}
-
-.custom-quill .ql-editor {
-  min-height: 250px;
-}
-
-.custom-quill .ql-stroke {
-  stroke: var(--text-secondary) !important;
-}
-
-.custom-quill .ql-fill {
-  fill: var(--text-secondary) !important;
-}
-
-.custom-quill .ql-picker {
-  color: var(--text-secondary) !important;
-}
-
-.custom-quill .ql-active .ql-stroke,
-.custom-quill .ql-picker-label:hover .ql-stroke {
-  stroke: var(--accent) !important;
-}
-
-.custom-quill .ql-active .ql-fill,
-.custom-quill .ql-picker-label:hover .ql-fill {
-  fill: var(--accent) !important;
-}
-
-.custom-quill .ql-picker-options {
-  background-color: var(--bg-card) !important;
-  border-color: var(--border) !important;
-}
-
-.custom-quill .ql-snow.ql-toolbar button:hover .ql-stroke,
-.custom-quill .ql-snow .ql-toolbar button:hover .ql-stroke {
-  stroke: var(--accent) !important;
-}
-
-.custom-quill .ql-snow.ql-toolbar button:hover .ql-fill,
-.custom-quill .ql-snow .ql-toolbar button:hover .ql-fill {
-  fill: var(--accent) !important;
+.custom-ckeditor {
+  --ck-color-base-border: var(--border);
+  --ck-color-base-background: var(--bg-card);
+  --ck-color-base-text: var(--text-primary);
+  --ck-color-text: var(--text-primary);
+  --ck-color-button-default-hover-background: var(--bg-secondary);
+  --ck-color-button-default-active-background: var(--bg-tertiary);
+  --ck-color-button-on-background: var(--accent-subtle);
+  --ck-color-button-on-color: var(--accent);
+  --ck-color-toolbar-background: var(--bg-card);
+  --ck-color-toolbar-border: var(--border);
+  --ck-color-dropdown-panel-background: var(--bg-card);
+  --ck-color-dropdown-panel-border: var(--border);
+  --ck-color-list-background: var(--bg-card);
+  --ck-color-list-button-hover-background: var(--bg-secondary);
+  --ck-color-panel-background: var(--bg-card);
+  --ck-color-panel-border: var(--border);
 }
