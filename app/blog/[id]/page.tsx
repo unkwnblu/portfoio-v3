@@ -16,7 +16,7 @@ export default function BlogDetailPage() {
 
     const article = blog.find((a) => a.id === params.id);
     const relatedArticles = blog.filter((a) => !a.is_archived && a.id !== params.id).slice(0, 3);
-    const featuredProject = projects.length > 0 ? projects[0] : null;
+    const latestProjects = projects.slice(0, 3);
 
     useEffect(() => {
         if (!sectionRef.current || !article) return;
@@ -123,18 +123,6 @@ export default function BlogDetailPage() {
 
                 {/* Left Column: Article Body */}
                 <div className="detail-content space-y-12 min-w-0">
-                    {/* Share bar */}
-                    <div className="flex items-center justify-between border-b border-border pb-6">
-                        <p className="text-sm text-text-tertiary">Share this article</p>
-                        <button
-                            onClick={handleShare}
-                            className="flex items-center gap-2 rounded-xl bg-bg-secondary px-4 py-2.5 text-sm font-medium text-text-secondary transition-all hover:bg-accent hover:text-white"
-                        >
-                            {copied ? <Check size={16} /> : <Share2 size={16} />}
-                            {copied ? "Link Copied!" : "Share"}
-                        </button>
-                    </div>
-
                     {/* Excerpt context */}
                     <p className="text-xl font-medium leading-relaxed text-text-primary border-l-2 border-accent pl-6">
                         {article.excerpt}
@@ -172,7 +160,7 @@ export default function BlogDetailPage() {
 
                     {/* Author Profile Block */}
                     <div className="rounded-2xl border border-border bg-bg-card p-6 shadow-sm">
-                        <div className="flex items-center gap-4 mb-4">
+                        <div className="flex items-center gap-4">
                             <div className="h-16 w-16 overflow-hidden rounded-full border border-accent/20 bg-bg-secondary shrink-0">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
@@ -186,15 +174,6 @@ export default function BlogDetailPage() {
                                 <p className="text-sm text-accent">Author</p>
                             </div>
                         </div>
-                        <p className="text-sm leading-relaxed text-text-secondary mb-4 line-clamp-3">
-                            {profile.bio}
-                        </p>
-                        <button
-                            onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}
-                            className="w-full rounded-xl bg-bg-secondary px-4 py-2.5 text-sm font-semibold text-text-primary transition-all hover:bg-border"
-                        >
-                            Get in Touch
-                        </button>
                     </div>
 
                     {/* Related Articles */}
@@ -224,32 +203,40 @@ export default function BlogDetailPage() {
                         </div>
                     )}
 
-                    {/* Featured Project */}
-                    {featuredProject && (
+                    {/* Latest Work */}
+                    {latestProjects.length > 0 && (
                         <div className="rounded-2xl border border-border bg-bg-card p-6 shadow-sm">
                             <h3 className="mb-4 text-sm font-bold tracking-wider text-text-tertiary uppercase">
                                 Latest Work
                             </h3>
-                            <button
-                                onClick={() => router.push(`/projects/${featuredProject.id}`)}
-                                className="group relative block w-full overflow-hidden rounded-xl border border-border"
-                            >
-                                <div className="aspect-[16/9] w-full bg-bg-secondary relative overflow-hidden">
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img
-                                        src={featuredProject.banner_url || "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop"}
-                                        alt={featuredProject.title}
-                                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                    />
-                                    <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 flex items-center justify-center">
-                                        <span className="rounded-lg bg-accent px-4 py-2 text-xs font-bold text-white shadow-lg">View Project</span>
-                                    </div>
-                                </div>
-                                <div className="bg-bg-card p-4">
-                                    <h4 className="text-sm font-bold text-text-primary truncate">{featuredProject.title}</h4>
-                                    <p className="text-xs text-text-secondary truncate mt-1">{featuredProject.tech_stack.join(" • ")}</p>
-                                </div>
-                            </button>
+                            <div className="flex flex-col gap-5">
+                                {latestProjects.map((project) => (
+                                    <button
+                                        key={project.id}
+                                        onClick={() => router.push(`/projects/${project.id}`)}
+                                        className="group relative block w-full overflow-hidden rounded-xl border border-border glow-border transition-transform hover:-translate-y-1"
+                                    >
+                                        <div className="aspect-[16/9] w-full bg-bg-secondary relative overflow-hidden">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img
+                                                src={project.banner_url || "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop"}
+                                                alt={project.title}
+                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                            />
+                                            <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 flex items-center justify-center">
+                                                <span className="rounded-lg bg-accent px-4 py-2 text-xs font-bold text-white shadow-lg">View Project</span>
+                                            </div>
+                                            <div className="absolute right-3 top-3 rounded-full bg-black/50 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-md">
+                                                {project.category}
+                                            </div>
+                                        </div>
+                                        <div className="bg-bg-card p-4 text-left">
+                                            <h4 className="text-sm font-bold text-text-primary truncate transition-colors group-hover:text-accent">{project.title}</h4>
+                                            <p className="text-xs text-text-secondary truncate mt-1">{project.tech_stack.join(" • ")}</p>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     )}
                 </aside>
