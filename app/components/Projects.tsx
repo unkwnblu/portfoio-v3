@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -27,7 +28,13 @@ function ProjectCard({ project }: { project: Project }) {
                 <div className={`relative flex h-40 items-center justify-center ${!project.banner_url ? `bg-gradient-to-br ${project.gradient}` : "bg-bg-secondary"}`}>
                     {project.banner_url && (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={project.banner_url} alt={`${project.title} Banner`} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        <Image
+                            src={project.banner_url}
+                            alt={`${project.title} Banner`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
                     )}
                     {project.banner_url && <div className="absolute inset-0 bg-black/20 transition-opacity duration-300 group-hover:bg-black/40" />}
                     {!project.banner_url && <span className="text-5xl drop-shadow-lg transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6">{project.icon}</span>}

@@ -75,11 +75,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <div className="flex items-center justify-between border-b border-border p-4">
                     {!collapsed && (
                         <div>
-                            <h1 className="text-base font-bold text-text-primary">
+                            <div className="text-base font-bold text-text-primary">
                                 <span className="gradient-text">Dwayne</span>
                                 <span>Agbale</span>
                                 <span className="gradient-text">.</span>
-                            </h1>
+                            </div>
                             <p className="text-[10px] font-medium uppercase tracking-wider text-text-tertiary">
                                 Admin Portal
                             </p>

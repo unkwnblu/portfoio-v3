@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -104,7 +105,7 @@ export default function ProjectDetailPage() {
                 {project.banner_url && (
                     <div className="absolute inset-0 z-0">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={project.banner_url} alt={`${project.title} Banner`} className="h-full w-full object-cover" />
+                        <Image src={project.banner_url} alt={`${project.title} Banner`} fill className="object-cover" priority sizes="100vw" />
                         <div className="absolute inset-0 bg-black/50" />
                     </div>
                 )}

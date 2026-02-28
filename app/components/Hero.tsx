@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowDown, Sparkles, Code2, Palette } from "lucide-react";
@@ -136,11 +137,13 @@ export default function Hero() {
                 transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
                 className="hero-image-wrapper pointer-events-none absolute bottom-0 right-[-10%] z-0 hidden h-[90vh] lg:block xl:right-[-5%] 2xl:right-[5%]"
             >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                     src="/profile.png"
                     alt="Profile Portrait"
-                    className="h-full w-auto object-bottom drop-shadow-2xl grayscale-[20%] contrast-125"
+                    fill
+                    sizes="(max-width: 1024px) 0vw, 50vw"
+                    className="object-contain object-bottom drop-shadow-2xl grayscale-[20%] contrast-125"
+                    priority
                 />
             </motion.div>
 

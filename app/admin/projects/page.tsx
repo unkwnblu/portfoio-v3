@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useDataStore } from "@/app/lib/DataStore";
 import type { Project, ProjectCategory, ProjectStatus } from "@/app/types";
 import { Plus, Pencil, Trash2, X, Check } from "lucide-react";
@@ -187,8 +188,7 @@ export default function ProjectsAdmin() {
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">Banner Image</label>
                             <div className="flex items-center gap-4">
                                 {form.banner_url && (
-                                    // eslint-disable-next-line @next/next/no-img-element
-                                    <img src={form.banner_url} alt="Banner Preview" className="h-16 w-32 object-cover rounded-lg border border-border" />
+                                    <Image src={form.banner_url} alt="Banner Preview" width={128} height={64} className="h-16 w-32 object-cover rounded-lg border border-border" />
                                 )}
                                 <div className="flex-1 text-sm">
                                     <input type="file" accept="image/*" onChange={handleBannerUpload} disabled={isUploading} className="block w-full text-sm text-text-secondary file:mr-4 file:rounded-full file:border-0 file:bg-bg-secondary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-accent hover:file:bg-bg-card-hover" />

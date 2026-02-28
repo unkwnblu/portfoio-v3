@@ -16,9 +16,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Dwayne — UI/UX Designer & Full-Stack Developer",
+  metadataBase: new URL('https://www.bludevs.site'),
+  title: {
+    default: "Dwayne Agbale — UI/UX Designer & Full-Stack Developer",
+    template: "%s | BluDevs",
+  },
   description:
-    "Multi-disciplinary UI/UX Designer and Full-Stack Developer based in Nigeria. Crafting pixel-perfect interfaces and robust applications.",
+    "Multi-disciplinary UI/UX Designer and Full-Stack Developer based in Nigeria. Crafting pixel-perfect interfaces and robust, secure digital experiences.",
   keywords: [
     "UI/UX Designer",
     "Full-Stack Developer",
@@ -27,11 +31,32 @@ export const metadata: Metadata = {
     "React",
     "Nigeria",
   ],
+  icons: {
+    icon: '/logo.svg',
+    apple: '/logo.svg',
+  },
   openGraph: {
-    title: "Dwayne — Designer & Developer",
+    title: "Dwayne Agbale — UI/UX Designer & Full-Stack Developer",
     description:
-      "Multi-disciplinary creative bridging design and engineering.",
+      "Multi-disciplinary creative bridging design and engineering. Crafting sleek, secure digital experiences.",
+    url: "https://www.bludevs.site",
+    siteName: "BluDevs",
+    locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/logo.svg",
+        width: 800,
+        height: 600,
+        alt: "BluDevs Logo",
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Dwayne Agbale — UI/UX Designer & Full-Stack Developer",
+    description: "Multi-disciplinary UI/UX Designer and Full-Stack Developer based in Nigeria.",
+    images: ['/logo.svg'],
   },
 };
 

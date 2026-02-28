@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowLeft, Clock, Share2, Check } from "lucide-react";
@@ -162,11 +163,12 @@ export default function BlogDetailPage() {
                     <div className="rounded-2xl border border-border bg-bg-card p-6 shadow-sm">
                         <div className="flex items-center gap-4">
                             <div className="h-16 w-16 overflow-hidden rounded-full border border-accent/20 bg-bg-secondary shrink-0">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
+                                <Image
                                     src="/profile.png"
                                     alt="Author"
-                                    className="h-full w-full object-cover object-top"
+                                    fill
+                                    sizes="64px"
+                                    className="object-cover object-top"
                                 />
                             </div>
                             <div>
@@ -218,11 +220,12 @@ export default function BlogDetailPage() {
                                     >
                                         <div className={`aspect-[16/9] w-full relative overflow-hidden flex items-center justify-center ${!project.banner_url ? `bg-gradient-to-br ${project.gradient}` : "bg-bg-secondary"}`}>
                                             {project.banner_url && (
-                                                // eslint-disable-next-line @next/next/no-img-element
-                                                <img
+                                                <Image
                                                     src={project.banner_url}
                                                     alt={project.title}
-                                                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                    fill
+                                                    sizes="(max-width: 640px) 100vw, 33vw"
+                                                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                                                 />
                                             )}
                                             {project.banner_url && <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 flex items-center justify-center">
