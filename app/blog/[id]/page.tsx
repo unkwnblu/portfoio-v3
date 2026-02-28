@@ -160,7 +160,7 @@ export default function BlogDetailPage() {
                     {/* Author Profile Block */}
                     <div className="rounded-2xl border border-border bg-bg-card p-6 shadow-sm">
                         <div className="flex items-center gap-4">
-                            <div className="h-16 w-16 overflow-hidden rounded-full border border-accent/20 bg-bg-secondary shrink-0">
+                            <div className="relative h-16 w-16 overflow-hidden rounded-full border border-accent/20 bg-bg-secondary shrink-0">
                                 <Image
                                     src="/profile.png"
                                     alt="Author"
