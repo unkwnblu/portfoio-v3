@@ -130,7 +130,7 @@ export default function BlogDetailPage() {
                     </p>
 
                     {/* Main content body with pre-wrap */}
-                    <div className="prose prose-invert prose-img:rounded-2xl prose-img:max-w-full prose-img:border prose-img:border-border max-w-full text-wrap" style={{ wordBreak: 'normal', overflowWrap: 'break-word' }}>
+                    <div className="prose prose-invert prose-img:rounded-2xl prose-img:max-w-full prose-img:border prose-img:border-border max-w-full">
                         <div dangerouslySetInnerHTML={{ __html: article.content || "Full article content coming soon." }} />
                     </div>
 
