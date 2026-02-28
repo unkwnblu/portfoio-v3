@@ -14,7 +14,7 @@ export default function CKEditorWrapper({ value, onChange }: Props) {
         <CKEditor
             editor={ClassicEditor}
             config={{
-                licenseKey: 'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3Nzk0OTQzOTksImp0aSI6ImFiZWViYzBiLTk3YzEtNDZmNy05MTE3LWJjODE4OGRkOWI0MyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiXSwiZmVhdHVyZXMiOlsiRFJVUCIsIkUyUCIsIkUyVyJdLCJ2YyI6IjA0MDNkYWE4In0.nDmBWqYL-x11MMH02MZfHG-PBpaG4qlufAlIBna0ebo9gMAxCWK0uCHefePMLSm4AsWPwOrJIunzB9YoV6m_-w',
+                licenseKey: 'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NzM1MzI3OTksImp0aSI6ImQ5ZDEyODliLTZlNWUtNDYwNy04NmM0LWU2YWMxYWZmYWJlMyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiLCJzaCJdLCJ3aGl0ZUxhYmVsIjp0cnVlLCJsaWNlbnNlVHlwZSI6InRyaWFsIiwiZmVhdHVyZXMiOlsiKiJdLCJ2YyI6IjQ2MjkxYjhjIn0.QrM-AZ6-UeXvRRc53FHKsX1Bz_99LqH5MJFRe3Cq0abF144khyospGZ5-AotV6CtpVnNRKva8qZVZ9nH6cULFA',
                 plugins: [Essentials, Bold, Italic, Heading, Link, Paragraph, List],
                 toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'undo', 'redo'],
             }}
