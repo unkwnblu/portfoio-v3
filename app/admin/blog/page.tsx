@@ -6,10 +6,12 @@ import type { BlogArticle } from "@/app/types";
 import { Plus, Pencil, Trash2, Check, Clock, Archive } from "lucide-react";
 import ConfirmModal from "@/app/admin/components/ConfirmModal";
 import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
 
-// Dynamically import ReactQuill to avoid SSR SSR document errors
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+// Dynamically import our React 19 bypass wrapper, NOT react-quill directly
+const ReactQuill = dynamic(
+    () => import("@/app/admin/components/ReactQuillWrapper"),
+    { ssr: false }
+);
 
 const quillModules = {
     toolbar: [
