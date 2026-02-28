@@ -5,6 +5,34 @@ import { useDataStore } from "@/app/lib/DataStore";
 import type { BlogArticle } from "@/app/types";
 import { Plus, Pencil, Trash2, Check, Clock, Archive } from "lucide-react";
 import ConfirmModal from "@/app/admin/components/ConfirmModal";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
+
+// Dynamically import ReactQuill to avoid SSR SSR document errors
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+
+const quillModules = {
+    toolbar: [
+        [{ header: [2, 3, 4, false] }],
+        ["bold", "italic", "underline", "strike", "blockquote"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        ["link", "image"],
+        ["clean"],
+    ],
+};
+
+const quillFormats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "link",
+    "image",
+];
 
 const gradientOptions = [
     "from-rose-500/20 to-pink-600/20", "from-blue-500/20 to-indigo-600/20",
@@ -78,7 +106,17 @@ export default function BlogAdmin() {
                         </div>
                         <div className="sm:col-span-2">
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">Full Content</label>
-                            <textarea value={form.content || ""} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={10} className="w-full rounded-xl border border-border bg-bg-secondary px-4 py-2.5 text-sm text-text-primary outline-none focus:border-accent resize-none font-mono" placeholder="Write full article content here. New lines will be preserved." />
+                            <div className="bg-bg-secondary rounded-xl border border-border overflow-hidden">
+                                <ReactQuill
+                                    theme="snow"
+                                    value={form.content || ""}
+                                    onChange={(content) => setForm({ ...form, content })}
+                                    modules={quillModules}
+                                    formats={quillFormats}
+                                    className="text-text-primary custom-quill"
+                                    placeholder="Write full article content here..."
+                                />
+                            </div>
                         </div>
                         <div>
                             <label className="mb-1.5 block text-xs font-medium text-text-secondary">Tag</label>

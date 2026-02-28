@@ -217,3 +217,61 @@ body {
 .animate-marquee-reverse {
   animation: marquee-reverse 25s linear infinite;
 }
+
+/* ── React Quill Custom Dark Mode Styles ── */
+.custom-quill .ql-toolbar {
+  background-color: var(--bg-card);
+  border-color: var(--border) !important;
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+}
+
+.custom-quill .ql-container {
+  border-color: var(--border) !important;
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  min-height: 250px;
+}
+
+.custom-quill .ql-editor {
+  min-height: 250px;
+}
+
+.custom-quill .ql-stroke {
+  stroke: var(--text-secondary) !important;
+}
+
+.custom-quill .ql-fill {
+  fill: var(--text-secondary) !important;
+}
+
+.custom-quill .ql-picker {
+  color: var(--text-secondary) !important;
+}
+
+.custom-quill .ql-active .ql-stroke,
+.custom-quill .ql-picker-label:hover .ql-stroke {
+  stroke: var(--accent) !important;
+}
+
+.custom-quill .ql-active .ql-fill,
+.custom-quill .ql-picker-label:hover .ql-fill {
+  fill: var(--accent) !important;
+}
+
+.custom-quill .ql-picker-options {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border) !important;
+}
+
+.custom-quill .ql-snow.ql-toolbar button:hover .ql-stroke,
+.custom-quill .ql-snow .ql-toolbar button:hover .ql-stroke {
+  stroke: var(--accent) !important;
+}
+
+.custom-quill .ql-snow.ql-toolbar button:hover .ql-fill,
+.custom-quill .ql-snow .ql-toolbar button:hover .ql-fill {
+  fill: var(--accent) !important;
+}
