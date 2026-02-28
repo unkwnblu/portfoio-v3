@@ -4,11 +4,13 @@ import { useState } from "react";
 import { useDataStore } from "@/app/lib/DataStore";
 import type { InstagramPost } from "@/app/types";
 import { Plus, Trash2, Image as ImageIcon, Loader2 } from "lucide-react";
+import ConfirmModal from "@/app/admin/components/ConfirmModal";
 import heic2any from "heic2any";
 
 export default function InstagramAdmin() {
     const { instagram, addInstagramPost, deleteInstagramPost, uploadFile, deleteFile } = useDataStore();
     const [uploading, setUploading] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<InstagramPost | null>(null);
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || []);
@@ -127,7 +129,7 @@ export default function InstagramAdmin() {
                             <div className={`absolute inset-0 bg-gradient-to-br ${post.gradient}`} />
                         )}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/40 transition-colors">
-                            <button onClick={() => handleDelete(post)} className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500 text-white opacity-0 group-hover:opacity-100 hover:bg-red-600 transition-all scale-75 group-hover:scale-100">
+                            <button onClick={() => setItemToDelete(post)} className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500 text-white opacity-0 group-hover:opacity-100 hover:bg-red-600 transition-all scale-75 group-hover:scale-100">
                                 <Trash2 size={16} />
                             </button>
                         </div>
@@ -142,6 +144,16 @@ export default function InstagramAdmin() {
                     <p className="mt-1 text-xs text-text-tertiary">Upload up to 8 images to show on your feed.</p>
                 </div>
             )}
+
+            <ConfirmModal
+                isOpen={!!itemToDelete}
+                onClose={() => setItemToDelete(null)}
+                onConfirm={() => {
+                    if (itemToDelete) handleDelete(itemToDelete);
+                }}
+                title="Delete Image"
+                message="Are you sure you want to delete this Instagram image? This action cannot be undone."
+            />
         </div>
     );
 }

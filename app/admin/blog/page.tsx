@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useDataStore } from "@/app/lib/DataStore";
 import type { BlogArticle } from "@/app/types";
 import { Plus, Pencil, Trash2, Check, Clock, Archive } from "lucide-react";
+import ConfirmModal from "@/app/admin/components/ConfirmModal";
 
 const gradientOptions = [
     "from-rose-500/20 to-pink-600/20", "from-blue-500/20 to-indigo-600/20",
@@ -20,6 +21,7 @@ export default function BlogAdmin() {
     const [editing, setEditing] = useState<string | null>(null);
     const [creating, setCreating] = useState(false);
     const [form, setForm] = useState(emptyArticle);
+    const [itemToDelete, setItemToDelete] = useState<{ id: string, title?: string } | null>(null);
 
     const startCreate = () => { setCreating(true); setEditing(null); setForm(emptyArticle); };
     const startEdit = (a: BlogArticle) => { setEditing(a.id); setCreating(false); setForm(a); };
@@ -118,7 +120,7 @@ export default function BlogAdmin() {
                                 <Archive size={14} />
                             </button>
                             <button onClick={() => startEdit(article)} className="flex h-8 w-8 items-center justify-center rounded-lg text-text-tertiary hover:bg-bg-secondary hover:text-accent"><Pencil size={14} /></button>
-                            <button onClick={() => deleteBlogArticle(article.id)} className="flex h-8 w-8 items-center justify-center rounded-lg text-text-tertiary hover:bg-red-500/10 hover:text-red-400"><Trash2 size={14} /></button>
+                            <button onClick={() => setItemToDelete({ id: article.id, title: article.title })} className="flex h-8 w-8 items-center justify-center rounded-lg text-text-tertiary hover:bg-red-500/10 hover:text-red-400"><Trash2 size={14} /></button>
                         </div>
                     </div>
                 ))}
@@ -128,6 +130,16 @@ export default function BlogAdmin() {
                     </div>
                 )}
             </div>
+
+            <ConfirmModal
+                isOpen={!!itemToDelete}
+                onClose={() => setItemToDelete(null)}
+                onConfirm={() => {
+                    if (itemToDelete) deleteBlogArticle(itemToDelete.id);
+                }}
+                title="Delete Article"
+                message={`Are you sure you want to delete "${itemToDelete?.title}"? This action cannot be undone.`}
+            />
         </div>
     );
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useDataStore } from "@/app/lib/DataStore";
 import type { VideoItem } from "@/app/types";
 import { Plus, Pencil, Trash2, Check, Play } from "lucide-react";
+import ConfirmModal from "@/app/admin/components/ConfirmModal";
 
 const gradientOptions = [
     "from-violet-600 to-indigo-800", "from-rose-600 to-pink-800",
@@ -21,6 +22,7 @@ export default function VideosAdmin() {
     const [creating, setCreating] = useState(false);
     const [form, setForm] = useState(emptyVideo);
     const [isUploading, setIsUploading] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<{ id: string, title?: string } | null>(null);
 
     const startCreate = () => { setCreating(true); setEditing(null); setForm(emptyVideo); };
     const startEdit = (v: VideoItem) => { setEditing(v.id); setCreating(false); setForm(v); };
@@ -161,8 +163,8 @@ export default function VideosAdmin() {
                         <div
                             key={video.id}
                             className={`group relative flex flex-col rounded-2xl border border-border bg-bg-card overflow-hidden transition-all hover:border-accent/10 ${isPortrait
-                                    ? "md:col-span-1 lg:col-span-1 row-span-2 min-h-[400px]"
-                                    : "md:col-span-1 lg:col-span-2 row-span-1 min-h-[220px]"
+                                ? "md:col-span-1 lg:col-span-1 row-span-2 min-h-[400px]"
+                                : "md:col-span-1 lg:col-span-2 row-span-1 min-h-[220px]"
                                 }`}
                         >
                             {/* Video thumbnail */}
@@ -197,7 +199,7 @@ export default function VideosAdmin() {
                                 </div>
                                 <div className="flex shrink-0 gap-1 z-30">
                                     <button onClick={() => startEdit(video)} className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${isPortrait ? 'text-white/80 hover:bg-white/20 hover:text-white' : 'text-text-tertiary hover:bg-bg-secondary hover:text-accent'}`}><Pencil size={14} /></button>
-                                    <button onClick={() => deleteVideo(video.id)} className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${isPortrait ? 'text-white/80 hover:bg-red-500/30 hover:text-red-300' : 'text-text-tertiary hover:bg-red-500/10 hover:text-red-400'}`}><Trash2 size={14} /></button>
+                                    <button onClick={() => setItemToDelete({ id: video.id, title: video.title })} className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${isPortrait ? 'text-white/80 hover:bg-red-500/30 hover:text-red-300' : 'text-text-tertiary hover:bg-red-500/10 hover:text-red-400'}`}><Trash2 size={14} /></button>
                                 </div>
                             </div>
                         </div>
@@ -209,6 +211,16 @@ export default function VideosAdmin() {
                     <p className="text-sm text-text-tertiary">No videos yet.</p>
                 </div>
             )}
+
+            <ConfirmModal
+                isOpen={!!itemToDelete}
+                onClose={() => setItemToDelete(null)}
+                onConfirm={() => {
+                    if (itemToDelete) deleteVideo(itemToDelete.id);
+                }}
+                title="Delete Video"
+                message={`Are you sure you want to delete "${itemToDelete?.title}"? This action cannot be undone.`}
+            />
         </div>
     );
 }

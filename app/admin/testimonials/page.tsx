@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useDataStore } from "@/app/lib/DataStore";
 import type { Testimonial } from "@/app/types";
 import { Plus, Pencil, Trash2, Check, Star, Quote } from "lucide-react";
+import ConfirmModal from "@/app/admin/components/ConfirmModal";
 
 const gradientOptions = [
     "from-emerald-500/10 to-teal-500/10", "from-blue-500/10 to-indigo-500/10",
@@ -20,6 +21,7 @@ export default function TestimonialsAdmin() {
     const [editing, setEditing] = useState<string | null>(null);
     const [creating, setCreating] = useState(false);
     const [form, setForm] = useState(emptyTestimonial);
+    const [itemToDelete, setItemToDelete] = useState<{ id: string, name?: string } | null>(null);
 
     const startCreate = () => { setCreating(true); setEditing(null); setForm(emptyTestimonial); };
     const startEdit = (t: Testimonial) => { setEditing(t.id); setCreating(false); setForm(t); };
@@ -108,7 +110,7 @@ export default function TestimonialsAdmin() {
                             </div>
                             <div className="flex gap-1">
                                 <button onClick={() => startEdit(t)} className="flex h-7 w-7 items-center justify-center rounded text-text-tertiary hover:bg-bg-secondary hover:text-accent"><Pencil size={12} /></button>
-                                <button onClick={() => deleteTestimonial(t.id)} className="flex h-7 w-7 items-center justify-center rounded text-text-tertiary hover:bg-red-500/10 hover:text-red-400"><Trash2 size={12} /></button>
+                                <button onClick={() => setItemToDelete({ id: t.id, name: t.name })} className="flex h-7 w-7 items-center justify-center rounded text-text-tertiary hover:bg-red-500/10 hover:text-red-400"><Trash2 size={12} /></button>
                             </div>
                         </div>
                     </div>
@@ -119,6 +121,16 @@ export default function TestimonialsAdmin() {
                     <p className="text-sm text-text-tertiary">No testimonials yet.</p>
                 </div>
             )}
+
+            <ConfirmModal
+                isOpen={!!itemToDelete}
+                onClose={() => setItemToDelete(null)}
+                onConfirm={() => {
+                    if (itemToDelete) deleteTestimonial(itemToDelete.id);
+                }}
+                title="Delete Testimonial"
+                message={`Are you sure you want to delete this testimonial from ${itemToDelete?.name}?`}
+            />
         </div>
     );
 }

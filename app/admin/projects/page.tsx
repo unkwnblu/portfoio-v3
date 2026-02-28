@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useDataStore } from "@/app/lib/DataStore";
 import type { Project, ProjectCategory, ProjectStatus } from "@/app/types";
 import { Plus, Pencil, Trash2, X, Check } from "lucide-react";
+import ConfirmModal from "@/app/admin/components/ConfirmModal";
 
 const categoryOptions: ProjectCategory[] = ["UI/UX", "Web Dev", "Mobile Apps", "IoT/Hardware"];
 const statusOptions: ProjectStatus[] = ["Completed", "Ongoing"];
@@ -36,6 +37,7 @@ export default function ProjectsAdmin() {
     const [form, setForm] = useState(emptyProject);
     const [techInput, setTechInput] = useState("");
     const [isUploading, setIsUploading] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<{ id: string, title: string } | null>(null);
 
     const startCreate = () => {
         setCreating(true);
@@ -287,7 +289,7 @@ export default function ProjectsAdmin() {
                         </span>
                         <div className="flex shrink-0 gap-1">
                             <button onClick={() => startEdit(project)} className="flex h-8 w-8 items-center justify-center rounded-lg text-text-tertiary hover:bg-bg-secondary hover:text-accent transition-colors"><Pencil size={14} /></button>
-                            <button onClick={() => deleteProject(project.id)} className="flex h-8 w-8 items-center justify-center rounded-lg text-text-tertiary hover:bg-red-500/10 hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
+                            <button onClick={() => setItemToDelete({ id: project.id, title: project.title })} className="flex h-8 w-8 items-center justify-center rounded-lg text-text-tertiary hover:bg-red-500/10 hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
                         </div>
                     </div>
                 ))}
@@ -297,6 +299,16 @@ export default function ProjectsAdmin() {
                     </div>
                 )}
             </div>
+
+            <ConfirmModal
+                isOpen={!!itemToDelete}
+                onClose={() => setItemToDelete(null)}
+                onConfirm={() => {
+                    if (itemToDelete) deleteProject(itemToDelete.id);
+                }}
+                title="Delete Project"
+                message={`Are you sure you want to delete "${itemToDelete?.title}"? This action cannot be undone.`}
+            />
         </div>
     );
 }
