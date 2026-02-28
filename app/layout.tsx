@@ -45,10 +45,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/logo.svg",
-        width: 800,
-        height: 600,
-        alt: "BluDevs Logo",
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "BluDevs Open Graph Image",
       }
     ]
   },
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "Dwayne Agbale — UI/UX Designer & Full-Stack Developer",
     description: "Multi-disciplinary UI/UX Designer and Full-Stack Developer based in Nigeria.",
-    images: ['/logo.svg'],
+    images: ['/og-image.png'],
   },
 };
 
