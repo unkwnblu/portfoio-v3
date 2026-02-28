@@ -33,14 +33,16 @@ export default function Hero() {
         if (!sectionRef.current) return;
 
         const ctx = gsap.context(() => {
+            const isMobile = window.innerWidth < 768;
+
             // Parallax image wrapper on scroll
             gsap.to(".hero-image-wrapper", {
-                y: -40,
+                y: isMobile ? -20 : -40,
                 scrollTrigger: {
                     trigger: sectionRef.current,
                     start: "top top",
                     end: "bottom top",
-                    scrub: 1,
+                    scrub: isMobile ? 0.5 : 1,
                 },
             });
 
@@ -48,51 +50,53 @@ export default function Hero() {
             const chars = headlineRef.current?.querySelectorAll(".hero-char");
             if (chars) {
                 gsap.from(chars, {
-                    y: 120,
-                    rotateX: -90,
+                    y: isMobile ? 40 : 120,
+                    rotateX: isMobile ? 0 : -90,
                     opacity: 0,
-                    duration: 1.2,
-                    stagger: 0.03,
-                    ease: "power4.out",
+                    duration: isMobile ? 0.8 : 1.2,
+                    stagger: isMobile ? 0.015 : 0.03,
+                    ease: isMobile ? "power2.out" : "power4.out",
                     delay: 0.2,
                 });
             }
 
             // Parallax on scroll
             gsap.to(".hero-content", {
-                y: -80,
+                y: isMobile ? -40 : -80,
                 opacity: 0,
                 ease: "none",
                 scrollTrigger: {
                     trigger: sectionRef.current,
                     start: "top top",
                     end: "bottom top",
-                    scrub: 1,
+                    scrub: isMobile ? 0.5 : 1,
                 },
             });
 
             // Large background orb scale on scroll
-            gsap.to(".hero-orb-1", {
-                scale: 2,
-                y: 100,
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    start: "top top",
-                    end: "bottom top",
-                    scrub: 1.5,
-                },
-            });
+            if (!isMobile) {
+                gsap.to(".hero-orb-1", {
+                    scale: 2,
+                    y: 100,
+                    scrollTrigger: {
+                        trigger: sectionRef.current,
+                        start: "top top",
+                        end: "bottom top",
+                        scrub: 1.5,
+                    },
+                });
 
-            gsap.to(".hero-orb-2", {
-                scale: 1.5,
-                y: -80,
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    start: "top top",
-                    end: "bottom top",
-                    scrub: 1,
-                },
-            });
+                gsap.to(".hero-orb-2", {
+                    scale: 1.5,
+                    y: -80,
+                    scrollTrigger: {
+                        trigger: sectionRef.current,
+                        start: "top top",
+                        end: "bottom top",
+                        scrub: 1,
+                    },
+                });
+            }
         }, sectionRef);
 
         return () => ctx.revert();
@@ -115,9 +119,9 @@ export default function Hero() {
             className="relative flex min-h-screen items-center overflow-hidden"
         >
             {/* Huge background elements */}
-            <div className="pointer-events-none absolute inset-0 z-0">
-                <div className="hero-orb-1 absolute -left-60 -top-60 h-[700px] w-[700px] rounded-full bg-accent/6 blur-[150px]" />
-                <div className="hero-orb-2 absolute -right-40 bottom-0 h-[500px] w-[500px] rounded-full bg-accent/8 blur-[120px]" />
+            <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden transform-gpu">
+                <div className="hero-orb-1 absolute -left-60 -top-60 h-[700px] w-[700px] rounded-full bg-accent/6 blur-3xl lg:blur-[150px] will-change-transform" />
+                <div className="hero-orb-2 absolute -right-40 bottom-0 h-[500px] w-[500px] rounded-full bg-accent/8 blur-3xl lg:blur-[120px] will-change-transform" />
 
                 {/* Grid pattern */}
                 <div
@@ -135,20 +139,21 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 100 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
-                className="hero-image-wrapper pointer-events-none absolute bottom-0 right-[-10%] z-0 hidden h-[90vh] lg:block xl:right-[-5%] 2xl:right-[5%]"
+                className="hero-image-wrapper pointer-events-none absolute bottom-0 right-[-40%] sm:right-[-10%] z-0 h-[60vh] sm:h-[80vh] lg:h-[90vh] lg:right-[-10%] xl:right-[-5%] 2xl:right-[5%] opacity-40 lg:opacity-100 will-change-transform"
+                style={{ willChange: "transform, opacity" }}
             >
                 <Image
                     src="/profile.png"
                     alt="Profile Portrait"
-                    fill
-                    sizes="(max-width: 1024px) 0vw, 50vw"
-                    className="object-contain object-bottom drop-shadow-2xl grayscale-[20%] contrast-125"
+                    width={800}
+                    height={1200}
+                    className="h-full w-auto object-contain object-bottom drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)] lg:drop-shadow-2xl grayscale-[20%] contrast-125"
                     priority
                 />
             </motion.div>
 
             {/* Content Container */}
-            <div className="hero-content relative z-10 mx-auto w-full max-w-7xl px-6 pt-32 pb-16">
+            <div className="hero-content relative z-10 mx-auto w-full max-w-7xl px-6 pt-32 pb-16 transform-gpu will-change-transform">
 
                 {/* Text Content Block */}
                 <motion.div
@@ -156,6 +161,7 @@ export default function Hero() {
                     initial="hidden"
                     animate="visible"
                     className="max-w-3xl"
+                    style={{ willChange: "transform, opacity" }}
                 >
                     {/* Status badge */}
                     <motion.div variants={itemVariants}>
