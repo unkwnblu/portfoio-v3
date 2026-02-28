@@ -130,8 +130,8 @@ export default function BlogDetailPage() {
                     </p>
 
                     {/* Main content body with pre-wrap */}
-                    <div className="prose prose-invert prose-img:rounded-2xl prose-img:max-w-full prose-img:border prose-img:border-border max-w-full">
-                        <div dangerouslySetInnerHTML={{ __html: article.content || "Full article content coming soon." }} />
+                    <div className="prose prose-invert prose-img:rounded-2xl prose-img:max-w-full prose-img:border prose-img:border-border max-w-full break-words">
+                        <div dangerouslySetInnerHTML={{ __html: (article.content || "Full article content coming soon.").replace(/&nbsp;/g, ' ') }} />
                     </div>
 
                     {/* Footer Share & Back */}
