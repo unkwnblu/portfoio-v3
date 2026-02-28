@@ -216,16 +216,22 @@ export default function BlogDetailPage() {
                                         onClick={() => router.push(`/projects/${project.id}`)}
                                         className="group relative block w-full overflow-hidden rounded-xl border border-border glow-border transition-transform hover:-translate-y-1"
                                     >
-                                        <div className="aspect-[16/9] w-full bg-bg-secondary relative overflow-hidden">
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img
-                                                src={project.banner_url || "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop"}
-                                                alt={project.title}
-                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                            />
-                                            <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 flex items-center justify-center">
+                                        <div className={`aspect-[16/9] w-full relative overflow-hidden flex items-center justify-center ${!project.banner_url ? `bg-gradient-to-br ${project.gradient}` : "bg-bg-secondary"}`}>
+                                            {project.banner_url && (
+                                                // eslint-disable-next-line @next/next/no-img-element
+                                                <img
+                                                    src={project.banner_url}
+                                                    alt={project.title}
+                                                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                />
+                                            )}
+                                            {project.banner_url && <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 flex items-center justify-center">
                                                 <span className="rounded-lg bg-accent px-4 py-2 text-xs font-bold text-white shadow-lg">View Project</span>
-                                            </div>
+                                            </div>}
+                                            {!project.banner_url && <span className="text-5xl drop-shadow-lg transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6">{project.icon}</span>}
+                                            {!project.banner_url && <div className="absolute inset-0 bg-black/10 opacity-0 transition-opacity group-hover:opacity-100 flex items-center justify-center backdrop-blur-sm">
+                                                <span className="rounded-lg bg-accent px-4 py-2 text-xs font-bold text-white shadow-lg">View Project</span>
+                                            </div>}
                                             <div className="absolute right-3 top-3 rounded-full bg-black/50 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-md">
                                                 {project.category}
                                             </div>
