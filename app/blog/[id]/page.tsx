@@ -165,7 +165,7 @@ export default function BlogDetailPage() {
                                     src="/profile.png"
                                     alt="Author"
                                     fill
-                                    sizes="64px"
+                                    sizes="256px"
                                     className="object-cover object-top"
                                 />
                             </div>
