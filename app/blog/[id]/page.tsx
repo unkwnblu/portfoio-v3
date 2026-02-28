@@ -123,17 +123,15 @@ export default function BlogDetailPage() {
             <div className="mx-auto max-w-7xl px-6 py-16 lg:grid lg:grid-cols-[1fr_320px] lg:gap-16 items-start">
 
                 {/* Left Column: Article Body */}
-                <div className="detail-content space-y-12 min-w-0">
+                <div className="detail-content space-y-12 min-w-0 overflow-hidden">
                     {/* Excerpt context */}
                     <p className="text-xl font-medium leading-relaxed text-text-primary border-l-2 border-accent pl-6">
                         {article.excerpt}
                     </p>
 
                     {/* Main content body with pre-wrap */}
-                    <div className="prose prose-invert max-w-none">
-                        <p className="text-base leading-relaxed text-text-secondary whitespace-pre-wrap">
-                            {article.content || "Full article content coming soon."}
-                        </p>
+                    <div className="prose prose-invert prose-img:rounded-2xl prose-img:max-w-full prose-img:border prose-img:border-border max-w-none">
+                        <div dangerouslySetInnerHTML={{ __html: article.content || "Full article content coming soon." }} />
                     </div>
 
                     {/* Footer Share & Back */}
