@@ -15,7 +15,7 @@ export default function BlogDetailPage() {
     const [copied, setCopied] = useState(false);
 
     const article = blog.find((a) => a.id === params.id);
-    const relatedArticles = blog.filter((a) => a.id !== params.id).slice(0, 3);
+    const relatedArticles = blog.filter((a) => !a.is_archived && a.id !== params.id).slice(0, 3);
     const featuredProject = projects.length > 0 ? projects[0] : null;
 
     useEffect(() => {

@@ -7,7 +7,8 @@ import { gsap } from "@/app/hooks/useGsap";
 import { useDataStore } from "@/app/lib/DataStore";
 
 export default function Blog() {
-    const { blog: articles } = useDataStore();
+    const { blog } = useDataStore();
+    const articles = blog.filter(a => !a.is_archived);
     const sectionRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
